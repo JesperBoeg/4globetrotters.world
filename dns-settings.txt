@@ -1,0 +1,24 @@
+# DNS Configuration for 4globetrotters.world
+# Update these after you get your Hostinger IP address
+
+## Option 1: Nameserver Change (Recommended)
+# Change your domain's nameservers to Hostinger's:
+
+NAMESERVER 1: ns1.dns-parking.com
+NAMESERVER 2: ns2.dns-parking.com
+
+# (Verify exact nameservers in Hostinger hPanel → Domains)
+
+## Option 2: A Record Update
+# If keeping current DNS provider, update these records:
+
+TYPE    NAME    VALUE                   TTL
+----    ----    -----                   ---
+A       @       [HOSTINGER-IP-HERE]     3600
+A       www     [HOSTINGER-IP-HERE]     3600
+CNAME   www     4globetrotters.world    3600   (alternative to A record)
+
+# Get your Hostinger IP from: hPanel → Websites → Manage → Details
+
+## Current DNS (for reference)
+# You can check current DNS at: https://dnschecker.org/#A/4globetrotters.world

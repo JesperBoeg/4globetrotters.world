@@ -1,0 +1,18 @@
+# Large local backups and archives
+backup/
+*.tar
+*.zip
+
+# Logs and temp artifacts
+*.log
+comparison-top*.csv
+download-script*.txt
+download-log*.txt
+
+# Keep generated static output, but exclude massive media from GitHub
+option-b-static/site/wp-content/uploads/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/*.log
