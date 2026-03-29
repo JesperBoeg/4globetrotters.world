@@ -17,7 +17,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Deploy via FTPS (incremental)
+      - name: Deploy via FTPS (/public_html/site)
         env:
           FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
           FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
@@ -36,13 +36,13 @@ jobs:
 
           mirror -R \
             --verbose \
-            --only-newer \
+            --ignore-time \
             --parallel=2 \
             --exclude-glob .git* \
             --exclude-glob .github \
             --exclude-glob backup \
             --exclude-glob wp-content/uploads \
-            option-b-static/site /public_html/
+            option-b-static/site /public_html/site/
 
           quit
           EOF
