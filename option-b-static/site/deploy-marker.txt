@@ -1,0 +1,2 @@
+Deployed from GitHub Actions commit e93e432 fallback marker
+If you can read this at /deploy-marker.txt on www.4globetrotters.world, FTP target matches live docroot.
