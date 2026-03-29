@@ -17,7 +17,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Deploy via FTPS (/public_html)
+      - name: Deploy via FTPS (FTP root)
         env:
           FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
           FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
@@ -34,6 +34,7 @@ jobs:
           set net:reconnect-interval-max 30
           set xfer:clobber on
 
+          # Many Hostinger FTP users are chrooted already; deploy to FTP root.
           mirror -R \
             --verbose \
             --ignore-time \
@@ -42,7 +43,7 @@ jobs:
             --exclude-glob .github \
             --exclude-glob backup \
             --exclude-glob wp-content/uploads \
-            option-b-static/site /public_html/
+            option-b-static/site .
 
           quit
           EOF
