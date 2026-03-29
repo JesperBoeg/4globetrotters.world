@@ -1,679 +1,455 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4Globetrotters</title>
-  <link rel="stylesheet" href="/assets/wp-simple/css/bootstrap.min.css">
+  <title>4Globetrotters - Traveling the World with Children</title>
+  <meta name="description" content="A Danish family of four traveling the world. Follow Jesper, Line, Noah and Vitus on their adventures across 20+ countries.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/assets/wp-simple/style.css">
   <style>
-    body { background:#f4f4f4; }
-    .container-card { background:#fff; padding:30px; box-shadow:0 1px 8px rgba(0,0,0,.08); }
-    .text_logo { margin:0; }
-    .text_logo a { color:#222; text-decoration:none; }
-    #menu_row .navbar-nav > li > a { font-weight:600; }
-    .sidebar-box { margin-bottom:22px; padding:16px; background:#fff; border:1px solid #e9e9e9; }
-    .sidebar-box h4 { margin-top:0; margin-bottom:10px; }
-    .sidebar-box ul { margin:0; padding-left:18px; }
-    .dest-list { columns: 2; column-gap: 24px; }
-    .dest-list li { break-inside: avoid; margin: 0 0 8px 0; }
-    .meta { font-size:13px; color:#666; margin-bottom:14px; }
-    .post-card { margin-bottom:28px; border-bottom:1px solid #eee; padding-bottom:22px; }
-    .post-card img { width:100%; height:auto; margin:0 0 10px 0; }
-    .editable article img { display:block; max-width:100%; height:auto; margin:0 0 16px 0; }
-    .editable article .content-image { margin:0 0 18px 0; }
-    .editable article .content-image a { display:block; }
-    .editable article .video-embed { position:relative; width:100%; height:0; padding-bottom:56.25%; margin:0 0 18px 0; }
-    .editable article .video-embed iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-    #footer_row { margin-top:45px; padding:20px 0; background:#f2f2f2; border-top:1px solid #ddd; }
+    /* Reset and Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #333; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; line-height: 1.25; }
+
+    /* Navigation */
+    .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.97); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0,0,0,.06); transition: box-shadow .3s; }
+    .site-nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: .88rem; font-weight: 500; color: #555; letter-spacing: .3px; transition: color .2s; text-transform: uppercase; }
+    .nav-links a:hover { color: #c0392b; }
+    .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; }
+
+    /* Hero Section */
+    .hero { position: relative; height: 92vh; min-height: 500px; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; margin-top: 64px; }
+    .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center 30%; transition: transform 8s ease-out; }
+    .hero:hover .hero-bg { transform: scale(1.03); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.15) 0%, rgba(0,0,0,.55) 100%); }
+    .hero-content { position: relative; z-index: 2; color: #fff; padding: 0 24px; max-width: 800px; }
+    .hero-content h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); margin-bottom: 16px; text-shadow: 0 2px 30px rgba(0,0,0,.4); }
+    .hero-content p { font-size: clamp(1rem, 2vw, 1.25rem); font-weight: 300; opacity: .92; max-width: 600px; margin: 0 auto 28px; text-shadow: 0 1px 8px rgba(0,0,0,.3); }
+    .hero-btn { display: inline-block; padding: 14px 36px; border: 2px solid #fff; color: #fff; font-size: .9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 50px; transition: all .3s; }
+    .hero-btn:hover { background: #fff; color: #1a1a1a; }
+
+    /* Section Commons */
+    .section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
+    .section-title { text-align: center; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 12px; color: #1a1a1a; }
+    .section-subtitle { text-align: center; font-size: 1.05rem; color: #777; font-weight: 300; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .section-dark { background: #fafafa; }
+
+    /* About / Intro */
+    .intro { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .intro-text h2 { font-size: 2rem; margin-bottom: 18px; }
+    .intro-text p { margin-bottom: 14px; color: #555; }
+    .intro-text .cta-link { display: inline-block; margin-top: 8px; color: #c0392b; font-weight: 600; border-bottom: 2px solid #c0392b; padding-bottom: 2px; transition: opacity .2s; }
+    .intro-text .cta-link:hover { opacity: .7; }
+    .intro-img { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; }
+    .intro-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Destination Grid */
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .dest-card { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 3/2; cursor: pointer; }
+    .dest-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .dest-card:hover img { transform: scale(1.08); }
+    .dest-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 60%); display: flex; align-items: flex-end; padding: 20px; }
+    .dest-card-overlay h3 { color: #fff; font-size: 1.15rem; text-shadow: 0 1px 6px rgba(0,0,0,.4); }
+    .dest-card-overlay span { display: block; color: rgba(255,255,255,.8); font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 400; margin-top: 4px; }
+
+    /* Recent Posts */
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 32px; }
+    .post-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.06); transition: transform .3s, box-shadow .3s; }
+    .post-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+    .post-card-img { aspect-ratio: 16/9; overflow: hidden; }
+    .post-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .post-card:hover .post-card-img img { transform: scale(1.05); }
+    .post-card-body { padding: 24px; }
+    .post-card-body .meta { font-size: .8rem; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .post-card-body h3 { font-size: 1.15rem; margin-bottom: 10px; line-height: 1.4; }
+    .post-card-body h3 a { transition: color .2s; }
+    .post-card-body h3 a:hover { color: #c0392b; }
+    .post-card-body p { font-size: .92rem; color: #666; line-height: 1.6; }
+    .post-card-body .read-more { display: inline-block; margin-top: 12px; color: #c0392b; font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; }
+    .post-card-img { position: relative; }
+    .post-card-tag { position: absolute; top: 14px; left: 14px; z-index: 2; background: rgba(192,57,43,.9); color: #fff; font-size: .72rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; padding: 5px 12px; border-radius: 4px; font-family: 'Inter', sans-serif; }
+
+    /* Map Section */
+    .map-section { background: #1a1a1a; padding: 80px 24px; }
+    .map-section .section-title { color: #fff; }
+    .map-section .section-subtitle { color: #aaa; }
+    .map-wrap { max-width: 1200px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 40px rgba(0,0,0,.4); }
+    #travel-map { height: 520px; width: 100%; }
+    .map-legend { max-width: 1200px; margin: 20px auto 0; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .map-legend a { display: inline-block; padding: 6px 16px; background: rgba(255,255,255,.08); color: #ccc; font-size: .8rem; border-radius: 20px; transition: all .2s; border: 1px solid rgba(255,255,255,.1); }
+    .map-legend a:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+
+    /* Footer */
+    .site-footer { background: #111; color: #aaa; padding: 48px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    .footer-col h4 { color: #fff; font-size: 1rem; margin-bottom: 16px; }
+    .footer-col p, .footer-col a { font-size: .88rem; color: #888; line-height: 1.8; }
+    .footer-col a:hover { color: #fff; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 6px; }
+    .footer-bottom { max-width: 1200px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid #222; text-align: center; font-size: .82rem; color: #555; }
+    .social-links { display: flex; gap: 16px; margin-top: 8px; }
+    .social-links a { color: #888; font-size: 1.1rem; transition: color .2s; }
+    .social-links a:hover { color: #fff; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .intro { grid-template-columns: 1fr; }
+      .intro-img { order: -1; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #fff; padding: 24px; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      .hero { height: 75vh; }
+      .section { padding: 56px 20px; }
+      .posts-grid { grid-template-columns: 1fr; }
+      #travel-map { height: 380px; }
+    }
+
+    /* Leaflet popup override */
+    .leaflet-popup-content-wrapper { border-radius: 10px; font-family: 'Inter', sans-serif; }
+    .leaflet-popup-content { margin: 12px 16px; font-size: .9rem; line-height: 1.5; }
+    .leaflet-popup-content a { color: #c0392b; font-weight: 600; }
+    .map-popup-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .map-tooltip { font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; }
+    .leaflet-container { cursor: pointer; }
   </style>
 </head>
 <body>
-<header>
-  <div class="container">
-    <h1 class="text_logo"><a href="https://4globetrotters.world/">4Globetrotters</a></h1>
+
+<!-- Navigation -->
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">4Globetrotters</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about-us-2/">About Us</a></li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="#destinations">Destinations</a></li>
+      <li><a href="#travel-map-section">Map</a></li>
+    </ul>
   </div>
-  <nav id="menu_row" class="navbar navbar-default" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          <li><a href='/'>Home</a></li>
-<li><a href='/about-us-2/'>About us</a></li>
-<li><a href='/itinerary/'>Travel route (2015/16)</a></li>
-<li class="dropdown">
-  <a href="/countries-we-are-visiting/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Countries <span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-<li><a href='/cuba/'>Cuba</a></li>
-<li><a href='/mexico-yucatan/'>Mexico - Yucatan</a></li>
-<li><a href='/california-usa/'>California - USA</a></li>
-<li><a href='/hawaii/'>Hawaii</a></li>
-<li><a href='/australia/'>Australia - Adelaide to Sydney (January/February 2016)</a></li>
-<li><a href='/philippines/'>Philippines</a></li>
-<li><a href='/vietnam/'>Vietnam</a></li>
-<li><a href='/thailand/'>Thailand</a></li>
-<li><a href='/cyprus/'>Cyprus</a></li>
-<li><a href='/denmark-preparing-for-the-trip/'>Denmark (Preparing for the round-the-world trip)</a></li>
-  </ul>
-</li>
-<li><a href='/blog/'>Blog</a></li>
-        </ul>
-      </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg" style="background-image: url('/wp-content/uploads/2022/05/P1190935.jpg');"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Traveling the World with Children</h1>
+    <p>Follow our Danish family of four &mdash; Jesper, Line, Noah &amp; Vitus &mdash; as we explore 20+ countries together, from the Amazon to the Outback.</p>
+    <a href="#destinations" class="hero-btn">Explore Our Adventures</a>
+  </div>
+</section>
+
+<!-- About / Intro -->
+<div class="section">
+  <div class="intro">
+    <div class="intro-text">
+      <h2>Hey, We are the 4Globetrotters!</h2>
+      <p>We are a family of four from Denmark who believe that the best education happens outside the classroom. In 2015 we took the big step and planned a 6.5-month trip around the world &mdash; and we never stopped.</p>
+      <p>From snorkeling with sea lions in the Galapagos to trekking the Salkantay trail in Peru, from camping in the Australian Outback to exploring temples in Thailand &mdash; every trip is a new chapter in our family story.</p>
+      <p>This blog documents it all: the beautiful, the chaotic, and everything in between. Come along!</p>
+      <a href="/about-us-2/" class="cta-link">Read our full story &rarr;</a>
     </div>
-  </nav>
-</header>
-
-<div id="blog_content_row">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="container-card editable">
-          <h1>Traveling the world with children</h1>
-<div class='post-card'>
-This is a travel blog about our family of 4 (Jesper, Line, Noah and Vitus) from Denmark and our travels overseas.
-
-We have always loved to travel but in 2015 we took the big step and planned a 6,5 month trip around the world visiting Cyprus, Thailand, Vietnam, Philippines, Australia, Hawaii, California, Mexico, Cuba and the Deep South (USA). That was a great experience and we documented it all on this travel blog.
-
-In the summer of 2017 we headed out again visiting The Northern Territory and Queensland in Australia as well as Bali and some nearby islands in Indonesia.
-
-In 2018 we spent the summer vacation on the Island of Sardinia (not documented on this blog), but in 2019 we decided to chase another dream and visit the States again to discover the national parks of Rocky Mountains, Yellowstone, Bryce, Zion, Anthelope Canyon and Grand Canyon.
-
-Our 2020 and 2021 travel plans were cancelled due to Covid but from May to September 2022 we were on the road again visiting San Francisco (5 days), French Polynesia (6.5 weeks), Fiji (2 weeks), Western Australia (6 weeks) and 3 days in Singapore to break up the long journey home.
-
-After a mellow (and rainy) 3 week roadtrip in the summer of 2023 it was time to head overseas again and we are currently on an 8 week South American trip visiting Galapagos, Mainland Ecuador and Peru.
-
-Come along and experience the world with us.
-
-To find blog posts concerning a specific country just click on "Countries" in the menu and select the country - posts will be at the bottom of the page.
-</div>
-<h2>Destinations</h2>
-<ul class='dest-list'>
-<li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-</ul>
-<div class='post-card'>
-  <h2><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'>Wildlife experience extraordinaire in Puerto Maldonado, Amazonas</a></h2>
-  <p class='meta'>By LineogJesper on August 8, 2024</p>
-  <p><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'><img src='/wp-content/uploads/P1020357.jpg' alt='Wildlife experience extraordinaire in Puerto Maldonado, Amazonas'></a></p>
-  <!-- wp:paragraph -->
-<p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>From Cusco we took the Excluciva night bus to Puerto Maldonado. A 10 hour bus ride but fortunately in the biggest seats we have ever had in a bus and with the possibility to fully lie down. As usual Line found the speed too high, and with the road being very winding she did not sleep much, whereas Noah, Vitus and Jesper slept comfortably most of the way.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4398,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240801_210234.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>At the bus terminal we were picked up by Olaya travel and after a quick breakfast we were heading for the Amazon. 1.5 hoursâ€™ drive and 50 minutesâ€™ boat ride later we arrived at the Terre Verde Eco lodge where we would spend the next 3 out of our 5 days.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4410,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240805_073423.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4409,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240805_073347.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p><strong>Day 1 - First day at the Terra Verde Eco Lodge</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Arriving from the very temperate and dry Cusco we were not at all prepared for the heat and humidity of the rain-forest, and we struggled a bit to adjust as we were drenched in sweat for the better part of the first day while constantly having to reapply repellent to keep most of the mosquitos off.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>After the midday heat had passed we went for a walk around the lodge and the guide pointed out various animals and plants. Noah and Jesper also volunteered to be bitten by one of the less poisonous fire ants.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>After dark we went for a night-walk to search for more animals. The biggest hit was a giant chicken tarantula about the size of a small lunch plate.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4413,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/IMG-20240806-WA0001.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4414,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/IMG-20240806-WA0003.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4407,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240803_182954.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4402,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240802_185411.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4401,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240802_181541.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p><strong>Day 2 in the Amazon - giant Macaws at the â€œClay Lickâ€ and sloth at the canopy tower</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Waking up before dawn and getting in the boat we looked forward to one of the main attractions: The â€œMacaw Clay Lickâ€. Weather and temperature permitting the Macaws and lots of other smaller species of parrot gather in the early hours to socialize and lick salt and other essential minerals off the clay at a special place on the riverside.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4387,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020361.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4386,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020357.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>Fortunately we were lucky - clear skies and normal (aka. very hot) temperatures meant that the bids arrived right on time and we got to enjoy the beautiful scenery together with 4 other tour groups.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>As you watch the birds from the opposite side of the river you need a really powerful camera lens to get good pictures. Fortunately the guide had brought a very powerful â€œtelescopeâ€ and helped us take pictures through it using our mobile phones. Not National Geographic quality but good enough to save the memories.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4375,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020293.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4374,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020291.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4373,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020279.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4371,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020266.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4372,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020272.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4404,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240803_071544.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4406,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240803_072537.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>After the â€œshowâ€ was over and the giant birds flew right over us and back in the rainforest we had a great breakfast on the lakeside including everything from pancakes to yoghurt, coffee, tea, avocado and buns. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4376,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020298.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>On the way back we were lucky enough to spot a lone capybara and later a whole family playing at the river bank. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4380,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020317.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4379,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020310.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4378,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020307.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4377,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020302.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>After a short rest we went to discover the plants around the lodge and learn more about their use as food and medicin for the local people.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>11.30am to 2pm is time for lunch and siesta in the Amazon. It is so hot and humid that even eating will result in you being drenched in sweat, so we did our best not to move at all and either take a nap or quietly read in front of a fan.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>In the afternoon we took the boat to the canopy tower. A 47 meter high steel structure in the middle of the jungle where you are able to look down on the canopy from above and hopefully discover the birds and mammals that live in the canopy of the rainforest.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4383,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020341.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>Unfortunately Noah was not feeling well so only Vitus, Line and Jesper went. Line got two thirds up before her vertigo got the better of her (still quite an accomplishment). Vitus and Jesper made it to the top and got a beautiful view over the Amazon jungle. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4382,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020332.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4381,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020329.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>Unfortunately the animals had decided to take the day off, and we did not see the Tucans or monkeys that are normally plentiful in the area. After about 10 minutes the wasps and flies started to arrive. They like to lick the salt of sweating tourists while also giving them a sting to let them know who is in charge. About half the group (including Vitus) got stung by the wasps, so after about 40 minutes in the swaying tower we had all had enough of the view.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>On the way back we got a chance to see a sloth sleeping in a tree just a few meters from the trail.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4384,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020350.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>In the evening it was time for another night walk to see even more birds and insects.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p><strong>Day 3 hot Caiman jungle walk, Piranha fishing, illegal gold mining and a disappointing mammal clay lick</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>On our third day we got up before sunrise (again) to hike about 45 minutes to the â€œMammal Clay Lickâ€ area deeper in the jungle. The main goal was to see a tapir as they frequent the place at dawn and just before sunset. Though we were trying to walk as quietly as possible we heard a loud â€œsnortâ€ when we were almost there and a big animal running away through the jungle. Unfortunately that was the only mammal we saw (or rather heard), and after about 40 minutes of watching clay we went back for breakfast.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4389,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020370.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4388,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020368.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>After breakfast we hopped on the boat again for a 25 minutesâ€™ ride to a jungle trail leading us to a less frequented lake where there should be a good chance of seeing caimans or maybe even anacondas. That turned out to be the hottest walk so far, and we were literally drenched by the time we got there. We saw a number of birds on the way and the caimans showed up as planned. Unfortunately we did not see any anacondas but we knew that was a slim chance.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4392,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020381.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4391,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020377.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4390,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020373.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>After lunch and siesta it was time to go fishing for piranhas - an activity Vitus had been looking forward to since leaving Denmark. While the piranhas bit all the time (and stole our bait) they were not easy to hook. Fortunately both Vitus and Noah caught one in the end. Line also caught a fish (though very small and not a piranha but a duckfish) and only Jesper had to leave the spot empty handed. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4353,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020408.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4352,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020406.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4351,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020401.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4350,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020394.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4349,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020393.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>The guide had the cooks prepare the fish for dinner as an extra snack and removed the jaws so we could bring them back home as a souvenir. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4421,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/IMG-20240807-WA0000.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>The trip up river to the fishing spot also exposed one of the less idyllic part of the Amazon. As we moved deeper into the jungle and left the area where tour boats and rangers often travel we encountered illegal mining rigs at the river. One thing is the pollution and noise from the ancient diesel engines pulling gravel from the river bottom, but they also use mercury to extract the gold which is very, very bad for the river systems.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4347,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020388.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>It was, however, also evident that these were not big corporations but very poor people just trying to make a living, and where getting food enough on the table for themselves and their families is a constant struggle.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>In the evening we had another shot at the mammal clay lick but again saw nothing but clay. When questioning the guide he admitted that sightings were very rare and honestly he had not encountered a single mammal in that spot in his 2 months of working there. The 30% chance written in the brochure seems in need of an adjustmentâ€¦</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p><strong>Day 4 - Giant Otters, Monkeys, Caimans and a variety of birds at Sandoval lake</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>On the morning of day 4 we packed our bags and prepared to leave Terra Verde to go to the Sandoval lake where we would spend the last night of our Amazon adventure. After about 2 hours by boat and car we were back in Puerto Maldonado where we drove straight to another boat for a 30 minutesâ€™ boat ride down the river and afterwards a 3 km. hike (fortunately mostly in the shade) on a boardwalk to Sandoval lake.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>After boarding a canoe it did not take long for us to see the first caiman and a large number of different birds. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4440,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020431.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4439,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020599.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4435,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020430.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4436,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020582.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4437,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020587.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>We never quite understood how our guide was able to spot a bird that was little more than a silhouette in the distance or partly hidden in the scrub and immediately know the species. At this point it was getting really hot. We had a cloud cover for the first part of the boat ride to the lodge but when the sun came out we could not help wishing for the ride to end despite the beautiful scenery. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4365,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020578.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4366,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020597.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4363,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020549.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4356,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020435.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4355,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020426.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>After lunch and siesta we went for a 4 hour canoe ride around the lake and only returned an hour after dark. We saw so many different animals but our clear favorites were the small squirrel monkeys followed by the cute brown capuchin monkeys that always follow in their trail (squirrel monkeys live in large packs of around 100 individuals and are incredibly good at warning each other when predators are close, by staying close the larger capuchins take advantage of the alarm system). </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4361,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020494.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4362,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020523.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>We were also fortunate enough to be able to observe the giant otters hunting in the lake while their small cubs would constantly be screaming for the parents to share their fish (a very weird sound).</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4360,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020482.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4359,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020480.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4358,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020457.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p><strong>Day 5 Tucans, Anteaters, Beautiful sunrise at the lake and return to civilization </strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>On our final morning on the Amazon tour we were ready to head out at 5 to watch animals and the sunrise over the lake. Finally a few tucans decided to appear in the tree tops, and though we did not catch them on camera it was great to see them and be able to check them on the list. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4443,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020559-1.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4444,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020564-1.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4445,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020575-1.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4434,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020586.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4431,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020591.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4428,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020553.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>On the boardwalk on the way back we did not expect to see more, but just as we were reaching the last part a family of Anteater (looks like a cross between a tapir and a cat) crossed the path right behind us. Unfortunately we did not have time to catch them on camera.   </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Our final activity was a visit to a set of wooden towers with hanging bridges high up in the canopy. It proved more of an adrenalin experience than anything else. Mainly because the structure did not look like it would pass western safety standards. We kept telling ourselves that if it would break at some point it would probably be a considerably heavier person that would trigger it and not us. Whether we were drenched in sweat because of anxiety or the hot and humid weather afterwards was hard to tell - probably a bit of both.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4412,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240806_111017.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4411,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/20240806_110732.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
-<p>That concluded our Amazon experience. We saw so many exciting things and Vitus declared it the best part of his journey so far. It was, however, also very hot, humid, and full of mosquitoes, and we were all looking forward to being able to sleep in a cool room and not having to worry about putting on repellent as soon as you stepped outside.&nbsp;&nbsp;&nbsp;&nbsp;</p>
-<!-- /wp:paragraph -->
-</div>
-<h2>Recent Posts</h2>
-<div class='post-card'><h3><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'>Wildlife experience extraordinaire in Puerto Maldonado, Amazonas</a></h3><p class='meta'>August 8, 2024</p><p>From Cusco we took the Excluciva night bus to Puerto Maldonado. A 10 hour bus ride but fortunately in the biggest seats we have ever had in a bus and with the possibility to fully lie down. As usual Line found the speed too high, and with the road being very winding she did not sleep much, whereas Noah, Vitus and Jesper slept comfortably most of the way. At the ...</p><p><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/amazing-rainbow-mountain-and-red-valley-tour/'>Amazing Rainbow Mountain and Red Valley tour</a></h3><p class='meta'>August 6, 2024</p><p>After the Salkantay trek Line and Vitus had had their share of long drives and hiking. Thus they chose to spend a quiet day in Cusco while Noah and Jesper went on the Rainbow Mountain tour. Priced at 70 soles (+ 25 soles entry to Rainbow Mountain) including breakfast and lunch it is definitely one of the cheaper tours we have been on. A chaotic start We were picked up ...</p><p><a href='/amazing-rainbow-mountain-and-red-valley-tour/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/a-very-rushed-sacred-valley-tour/'>A very rushed Sacred Valley tour</a></h3><p class='meta'>August 1, 2024</p><p>After recovering after the Salkantay trek and getting Line back on her feet we booked the full day Sacred Valley tour. The guide was great, the sights were interesting, the weather was good, the minivan was new and comfortable BUT never have we experienced anything as rushed in our many years of traveling. Along with at least 100 minivans and 1500 other tourists following the same route we were drilled ...</p><p><a href='/a-very-rushed-sacred-valley-tour/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/70-km-salkantay-5d-4n-trek/'>70 km Salkantay 5D/4N trek</a></h3><p class='meta'>July 28, 2024</p><p>Arriving in Cusco we had booked the Salkantay trek in advance starting already the next day with pickup at 4.15am. At 550 USD per person with the company &#226;€œSalkantay Trekking&#226;€ it was considerably more than we would usually spend on a tour so we were excited to learn how much different it would be compared to the more budget friendly options we usually choose. When comparing prices you should however ...</p><p><a href='/70-km-salkantay-5d-4n-trek/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/homestay-on-the-titicaca-lake/'>Homestay on the Titicaca Lake</a></h3><p class='meta'>July 28, 2024</p><p>We stopped by Puno on our way to Cusco to see the beautiful Titicaca Lake and maybe get a touch of the local culture at a 2D/1N homestay on one of the small islands. In Puno we stayed at Hostal Milagros Inn. We had seen the great reviews on Booking.com and we were not disappointed. The gentleman in charge spoke very good English and was about as sweet and helpful ...</p><p><a href='/homestay-on-the-titicaca-lake/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/4-amazing-days-in-arequipa/'>4 amazing days in Arequipa</a></h3><p class='meta'>July 22, 2024</p><p>We arrived in Arequipa very early in the morning after an overnight bus ride from Nazca. After an early breakfast we headed out to book tours for the coming days. After a bit of research we chose Waiky adventours as they spoke English and offered reasonable prices (as with most agencies they are mostly a storefront and it is a bit random what guide you end up with). If you ...</p><p><a href='/4-amazing-days-in-arequipa/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/easy-days-in-lima-paracas-huacachina-and-nazca/'>Easy days in Lima, Paracas, Huacachina and Nazca</a></h3><p class='meta'>July 16, 2024</p><p>Arriving in Lima we celebrated Noah&#226;€™s birthday at a local restaurant. The next day we went for a walk along the coast in Miraflores, looked at the views and found a great local restaurant for lunch named SUMAQ BERLIN. Incredible food and very cheap - highly recommended! https://maps.app.goo.gl/ampBejhqaadKD5GZ9 In the evening we went bowling but since Line had just reopened the sprain in her calf and Jesper was still struggling ...</p><p><a href='/easy-days-in-lima-paracas-huacachina-and-nazca/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/beautiful-views-altitude-sickness-and-hiking-at-the-cotopaxi-national-park/'>Beautiful views, altitude sickness and hiking at the Cotopaxi national park</a></h3><p class='meta'>July 12, 2024</p><p>After our week in Banos it was time for a change of scenery. Arriving at Hostal Rondador Cotopaxi it did not take long for us to notice the elevation change from 1800 meters at Banos to 3300. We did a 2 hour hike around the area and surprising stumbled upon a bikepark we planned to try out the day after. The highlight of the hike was a dog that joined ...</p><p><a href='/beautiful-views-altitude-sickness-and-hiking-at-the-cotopaxi-national-park/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/'>Kayaking, rafting, canyoning, ziplines, hiking and horseback riding in Banos Agua Santa</a></h3><p class='meta'>July 12, 2024</p><p>Kayaking, rafting, canyoning, ziplines, hiking and horseback riding in Banos Back on the Ecuadorian mainland after our amazing experiences in Galapagos it was time to head to the adventure capital Banos de agua santa for a week of adrenalin overload. Rain, mudslides and being the only tourists in town Massive rain and terrible mudslides had killed 14 people and blocked one of the main roads near Banos about a week ...</p><p><a href='/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/santa-cruz-hammerheads-las-grietas-and-the-bellavista-beach/'>Santa Cruz: Hammerheads, Las Grietas and the Bellavista Beach</a></h3><p class='meta'>July 7, 2024</p><p>Smooth Sailing to Santa Cruz Line had been dreading the boat trip from Isabela to Santa Cruz for days, imagining giant waves and inevitable seasickness. However, the journey turned out to be reasonably pleasant, and we all managed to sleep through most of it, having risen early at 4:40 AM to check in at the port by 5:10 AM. You need to pay $1 per person for a taxi boat ...</p><p><a href='/santa-cruz-hammerheads-las-grietas-and-the-bellavista-beach/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/flying-to-isabela-hiking-to-the-wall-of-tears-and-visiting-los-tuneles/'>Flying to Isabela, hiking to the Wall of Tears and visiting Los Tuneles</a></h3><p class='meta'>June 29, 2024</p><p>A Smooth Flight to Isabela To avoid the lengthy boat trip from San Cristobal to Isabela, we booked an early morning flight with Emetebe Airlines. Their website sternly warned that each passenger&#39;s baggage would be weighed individually with no possibility of sharing&#226;€”even between family members. With the strict 11.3 kilo limit per person, Jesper meticulously weighed and grouped each bag. However, at the airport, they simply bundled everything together. As ...</p><p><a href='/flying-to-isabela-hiking-to-the-wall-of-tears-and-visiting-los-tuneles/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/snorkeling-with-sea-lions-and-hiking-to-playa-baquerizo/'>Snorkeling with Sea Lions and Hiking to Playa Baquerizo</a></h3><p class='meta'>June 25, 2024</p><p>Our third day on San Cristobal was a mix of highs and lows. Unfortunately, Vitus wasn&#226;€™t feeling well, but he managed to rally enough to watch Denmark tie 1-1 with England in the European Championship. Despite his illness, he enjoyed cheering on his home team from the comfort of our apartment. After the game, Noah and Jesper set off for Muelle Tijeretas to snorkel at the spot we missed the ...</p><p><a href='/snorkeling-with-sea-lions-and-hiking-to-playa-baquerizo/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/immersed-in-nature-at-san-cristobal/'>Immersed in Nature at San Cristobal</a></h3><p class='meta'>June 20, 2024</p><p>Exploring San Cristobal: Our First Two Days in the Galapagos Day 1: A Warm Welcome from the Wildlife Arriving in San Cristobal around noon, we immediately felt the unique charm of the Galapagos. Noah was a bit flight-sick, so instead of hopping into a taxi, we decided to take a leisurely walk to town with our luggage. Thankfully, the 1 km stroll was quite manageable since we had to leave ...</p><p><a href='/immersed-in-nature-at-san-cristobal/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/meekatharra-jurian-bay-dwellingup-and-perth-western-australia-part-4-snorkeling-with-sea-lions-skate-park-crash-mountain-biking-and-the-big-city/'>Meekatharra, Jurian Bay, Dwellingup and Perth, Western Australia part 4: Snorkeling with sea lions, skate park crash, mountain biking and the big city</a></h3><p class='meta'>September 4, 2022</p><p>Our original plan was to spend a few days visiting the mine towns on the Great Northern Highway on our way from Karijini back to Perth. Unfortunately, Vitus crashed and hurt his front tooth in the skate park in Meekatharra and with the nearest dentist being in Geraldton (+500 km away) we had to make a quick change of plans. From Karijini to Meekatharra Let&#226;€™s be honest. There is not ...</p><p><a href='/meekatharra-jurian-bay-dwellingup-and-perth-western-australia-part-4-snorkeling-with-sea-lions-skate-park-crash-mountain-biking-and-the-big-city/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/karijini-and-tom-price-western-australia-part-3-beautiful-hikes-in-karijini-skate-park-mania-and-a-disappointing-mine-tour/'>Karijini and Tom Price, Western Australia part 3: Beautiful hikes in Karijini, Skate Park mania and a disappointing mine tour</a></h3><p class='meta'>August 31, 2022</p><p>After visiting Exmouth we drove east towards the famous Karijini National park. To avoid a full day of driving we did a stopover at Cheela Plains Farm Stay and ended with a non-planned 2 day stay in Tom Price as both Noah and Vitus developed a sudden case of Skate Park Mania. Cheela Plains Sitting about halfway between Exmouth and Karijini Cheela Plains is an obvious stopover if you do ...</p><p><a href='/karijini-and-tom-price-western-australia-part-3-beautiful-hikes-in-karijini-skate-park-mania-and-a-disappointing-mine-tour/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/coral-bay-and-exmouth-western-australia-part-2-whale-shark-tour-ningaloo-body-boarding-and-hiking/'>Coral Bay and Exmouth Western Australia part 2: Whale shark tour, Ningaloo, Body Boarding and hiking</a></h3><p class='meta'>August 14, 2022</p><p>From Quobba we headed further North to Coral Bay. Famous for its massive coral coverage just off the beach as well as Mantas and Whale sharks. Arriving to Coral Bay is an experience on its own. We had been driving for several hours on deserted highways and with just 2 kilometers to go we still saw nothing but empty outback. In about 200 meters the scenery changes from emptiness to ...</p><p><a href='/coral-bay-and-exmouth-western-australia-part-2-whale-shark-tour-ningaloo-body-boarding-and-hiking/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/perth-to-quobba-western-australia-part-1-kangaroos-campgrounds-pinnacles-gorges-dolphins-and-lots-of-humpback-whales/'>Perth to Quobba, Western Australia part 1: Kangaroos, campgrounds, pinnacles, gorges, dolphins and lots of humpback whales</a></h3><p class='meta'>August 6, 2022</p><p>Gumtree here we come Gumtree is the equivalent of the Danish DBA and while in Fiji we had arranged for a few used items to pick up in the Perth area before heading North. That included a Generator to keep the Campervan powered when staying off-grid. 2 scooters for the boys, 2 body boards and a MTB for Noah to get back in shape for the remainder of the season. ...</p><p><a href='/perth-to-quobba-western-australia-part-1-kangaroos-campgrounds-pinnacles-gorges-dolphins-and-lots-of-humpback-whales/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/fiji-viti-levu-roadtrip-out-of-our-comfort-zone-at-a-homestay-mud-pool-hiking-water-park-coral-reef-and-visit-to-tivua-island/'>Fiji Viti Levu roadtrip: Out of our comfort zone at a homestay, mud pool, hiking, water park, coral reef and visit to Tivua Island</a></h3><p class='meta'>July 30, 2022</p><p>A roadtrip on the main Island of Viti Levu might not be the first thing that comes to mind when you imagine a holiday in Fiji. Most head directly for the smaller resort islands but after 6 weeks of Island hopping in French Polynesia we were looking for a different kind of experience. As usual Noah has put together a video summarising our experiences in Fiji and more details can ...</p><p><a href='/fiji-viti-levu-roadtrip-out-of-our-comfort-zone-at-a-homestay-mud-pool-hiking-water-park-coral-reef-and-visit-to-tivua-island/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/tahiti-again-hikes-canoe-race-viewpoints-and-the-most-beautiful-coral-reef-in-french-polynesia/'>Tahiti again: Hikes, canoe race, viewpoints and the most beautiful coral reef in French Polynesia</a></h3><p class='meta'>July 20, 2022</p><p>Visiting Moorea, Maupiti, Raiatea, Huahine, Bora Bora and Rangiroa you would expect the most beautiful reefs to be found on the islands in French Polynesia. Having seen some of the most beautiful Coral we have ever seen we did not expect much from our last 3 days on Tahiti (we has not planned to stay more days on Tahiti but we could not get an earlier flight to Fiji). Arriving ...</p><p><a href='/tahiti-again-hikes-canoe-race-viewpoints-and-the-most-beautiful-coral-reef-in-french-polynesia/'>Read more</a></p></div>
-<div class='post-card'><h3><a href='/rangiroa-diving-dolphins-and-open-water-certificate-for-noah/'>Rangiroa: Diving, dolphins, and Open Water certificate for Noah</a></h3><p class='meta'>July 16, 2022</p><p>Rangiroa is part of the Tuamotu islands in French Polynesia. On all the Tuamotus the main island no longer exists (erosion) and thus only the surrounding Motus are still there forming a giant lagoon where the island used to be (the Rangiroa lagoon is big enough to contain the entire island of Tahiti). Being just a thin stretch of old coral reef there are no mountains and hills and in ...</p><p><a href='/rangiroa-diving-dolphins-and-open-water-certificate-for-noah/'>Read more</a></p></div>
-        </div>
-      </div>
-      <div class="col-md-4 sidebar sidebar_editable">
-        <div class="sidebar-box">
-          <h4>Connect With Us</h4>
-          <p>
-            <a href="https://www.facebook.com/linemarie.nathan" target="_blank">Facebook</a><br>
-            <a href="https://www.linkedin.com/pub/jesper-boeg/1/401/332" target="_blank">LinkedIn</a><br>
-            <a href="https://twitter.com/j_boeg" target="_blank">Twitter</a>
-          </p>
-        </div>
-        <div class="sidebar-box">
-          <h4>Recent Posts</h4>
-          <ul>
-            <li><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'>Wildlife experience extraordinaire in Puerto Maldonado, Amazonas</a></li>
-<li><a href='/amazing-rainbow-mountain-and-red-valley-tour/'>Amazing Rainbow Mountain and Red Valley tour</a></li>
-<li><a href='/a-very-rushed-sacred-valley-tour/'>A very rushed Sacred Valley tour</a></li>
-<li><a href='/70-km-salkantay-5d-4n-trek/'>70 km Salkantay 5D/4N trek</a></li>
-<li><a href='/homestay-on-the-titicaca-lake/'>Homestay on the Titicaca Lake</a></li>
-<li><a href='/4-amazing-days-in-arequipa/'>4 amazing days in Arequipa</a></li>
-<li><a href='/easy-days-in-lima-paracas-huacachina-and-nazca/'>Easy days in Lima, Paracas, Huacachina and Nazca</a></li>
-<li><a href='/beautiful-views-altitude-sickness-and-hiking-at-the-cotopaxi-national-park/'>Beautiful views, altitude sickness and hiking at the Cotopaxi national park</a></li>
-<li><a href='/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/'>Kayaking, rafting, canyoning, ziplines, hiking and horseback riding in Banos Agua Santa</a></li>
-<li><a href='/santa-cruz-hammerheads-las-grietas-and-the-bellavista-beach/'>Santa Cruz: Hammerheads, Las Grietas and the Bellavista Beach</a></li>
-          </ul>
-        </div>
-        <div class="sidebar-box">
-          <h4>Contact information</h4>
-          <p>4globetrotters, Michael Anchers Vej 25. 8270 Hojbjerg. Phone: +45 51 54 28 20</p>
-        </div>
-        <div class="sidebar-box">
-          <h4>Pages</h4>
-          <ul>
-            <li><a href='/about-us-2/'>About us</a></li>
-<li><a href='/australia/'>Australia - Adelaide to Sydney (January/February 2016)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/blog/'>Blog</a></li>
-<li><a href='/california-usa/'>California - USA</a></li>
-<li><a href='/countries-we-are-visiting/'>Countries we are visiting</a></li>
-<li><a href='/cuba/'>Cuba</a></li>
-<li><a href='/cyprus/'>Cyprus</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-<li><a href='/denmark-preparing-for-the-trip/'>Denmark (Preparing for the round-the-world trip)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/hawaii/'>Hawaii</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/mexico-yucatan/'>Mexico - Yucatan</a></li>
-<li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/philippines/'>Philippines</a></li>
-<li><a href='/privacy-policy/'>Privacy  policy</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/thailand/'>Thailand</a></li>
-<li><a href='/itinerary/'>Travel route (2015/16)</a></li>
-<li><a href='/about-us/'>Traveling the world with children</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/vietnam/'>Vietnam</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-          </ul>
-        </div>
-      </div>
+    <div class="intro-img">
+      <img src="/wp-content/uploads/2024/07/P1020011.jpg" alt="The family hiking in Peru" loading="lazy">
     </div>
   </div>
 </div>
 
-<div id="footer_row">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6"><p id="copyright">&copy; 2015-2026 4Globetrotters</p></div>
-      <div class="col-md-6"><p id="credit">Static Option B starter build</p></div>
+<!-- Featured Destinations -->
+<div class="section-dark" id="destinations">
+  <div class="section">
+    <h2 class="section-title">Where We Have Been</h2>
+    <p class="section-subtitle">Click a destination to read our stories, tips and travel guides from that part of the world.</p>
+    <div class="dest-grid">
+      <a href="/peru/" class="dest-card">
+        <img src="/wp-content/uploads/P1020357.jpg" alt="Peru" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Peru</h3><span>July/August 2024</span></div></div>
+      </a>
+      <a href="/ecuador-july-2024/" class="dest-card">
+        <img src="/wp-content/uploads/2024/07/P1010453.jpg" alt="Ecuador" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Ecuador</h3><span>July 2024</span></div></div>
+      </a>
+      <a href="/galapagos-june-2024/" class="dest-card">
+        <img src="/wp-content/uploads/P1020431.jpg" alt="Galapagos" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Galapagos</h3><span>June 2024</span></div></div>
+      </a>
+      <a href="/western-australia-julyaugust-2022/" class="dest-card">
+        <img src="/wp-content/uploads/2019/07/P1170397.jpg" alt="Western Australia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Western Australia</h3><span>July/August 2022</span></div></div>
+      </a>
+      <a href="/fiji-2022/" class="dest-card">
+        <img src="/wp-content/uploads/2016/02/P1090412.jpg" alt="Fiji" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Fiji</h3><span>July 2022</span></div></div>
+      </a>
+      <a href="/french-polynesia/" class="dest-card">
+        <img src="/wp-content/uploads/2022/05/P1190749-1.jpg" alt="French Polynesia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>French Polynesia</h3><span>May/June 2022</span></div></div>
+      </a>
+      <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/" class="dest-card">
+        <img src="/wp-content/uploads/2019/07/P1170331.jpg" alt="USA National Parks" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>USA National Parks</h3><span>Rockies, Yellowstone, Bryce, Zion &mdash; 2019</span></div></div>
+      </a>
+      <a href="/indonesia-bali-and-nearby-islands/" class="dest-card">
+        <img src="/wp-content/uploads/2015/11/P1050668.jpg" alt="Indonesia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Indonesia &mdash; Bali</h3><span>July/August 2017</span></div></div>
+      </a>
+      <a href="/australia/" class="dest-card">
+        <img src="/wp-content/uploads/2016/01/P1080572.jpg" alt="Australia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Australia</h3><span>Adelaide to Sydney &mdash; 2016</span></div></div>
+      </a>
+      <a href="/hawaii/" class="dest-card">
+        <img src="/wp-content/uploads/2016/02/P1100395.jpg" alt="Hawaii" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Hawaii</h3><span>February 2016</span></div></div>
+      </a>
+      <a href="/mexico-yucatan/" class="dest-card">
+        <img src="/wp-content/uploads/2015/12/P1060499.jpg" alt="Mexico Yucatan" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Mexico &mdash; Yucatan</h3><span>February/March 2016</span></div></div>
+      </a>
+      <a href="/thailand/" class="dest-card">
+        <img src="/wp-content/uploads/2015/11/P1050549.jpg" alt="Thailand" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Thailand</h3><span>October/November 2015</span></div></div>
+      </a>
     </div>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="/assets/wp-simple/js/bootstrap.min.js"></script>
+<!-- Recent Blog Posts -->
+<div class="section">
+  <h2 class="section-title">Latest Adventures</h2>
+  <p class="section-subtitle">Our most recent stories from the road &mdash; tales of wildlife, culture, family and the unexpected.</p>
+  <div class="posts-grid">
+
+    <article class="post-card">
+      <a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Amazon</span>
+        <img src="/wp-content/uploads/P1020357.jpg" alt="Wildlife in Puerto Maldonado" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">August 8, 2024</p>
+        <h3><a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/">Wildlife Experience Extraordinaire in Puerto Maldonado, Amazonas</a></h3>
+        <p>From Cusco we took the night bus to Puerto Maldonado. Giant otters, macaws, piranhas and a chicken tarantula the size of a lunch plate&hellip;</p>
+        <a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/amazing-rainbow-mountain-and-red-valley-tour/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Cusco</span>
+        <img src="/wp-content/uploads/P1020080.jpg" alt="Rainbow Mountain Peru" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">August 6, 2024</p>
+        <h3><a href="/amazing-rainbow-mountain-and-red-valley-tour/">Amazing Rainbow Mountain and Red Valley Tour</a></h3>
+        <p>Noah and Jesper went on the Rainbow Mountain tour while Line and Vitus spent a quiet day in Cusco. Priced at 70 soles including meals&hellip;</p>
+        <a href="/amazing-rainbow-mountain-and-red-valley-tour/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/70-km-salkantay-5d-4n-trek/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Salkantay</span>
+        <img src="/wp-content/uploads/2024/07/P1020011.jpg" alt="Salkantay Trek" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 28, 2024</p>
+        <h3><a href="/70-km-salkantay-5d-4n-trek/">70 km Salkantay 5D/4N Trek</a></h3>
+        <p>We booked the Salkantay trek with pickup at 4.15am. At 550 USD per person it was considerably more than usual &mdash; but was it worth it?</p>
+        <a href="/70-km-salkantay-5d-4n-trek/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/homestay-on-the-titicaca-lake/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Titicaca</span>
+        <img src="/wp-content/uploads/2024/07/P1010269.jpg" alt="Titicaca Lake Homestay" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 28, 2024</p>
+        <h3><a href="/homestay-on-the-titicaca-lake/">Homestay on the Titicaca Lake</a></h3>
+        <p>We stopped by Puno to see the beautiful Titicaca Lake and get a touch of local culture at a 2D/1N homestay on one of the small islands&hellip;</p>
+        <a href="/homestay-on-the-titicaca-lake/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/immersed-in-nature-at-san-cristobal/" class="post-card-img">
+        <span class="post-card-tag">Galapagos</span>
+        <img src="/wp-content/uploads/P1020431.jpg" alt="San Cristobal Galapagos" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">June 20, 2024</p>
+        <h3><a href="/immersed-in-nature-at-san-cristobal/">Immersed in Nature at San Cristobal</a></h3>
+        <p>Arriving in San Cristobal around noon, we immediately felt the unique charm of the Galapagos. A warm welcome from the wildlife&hellip;</p>
+        <a href="/immersed-in-nature-at-san-cristobal/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/" class="post-card-img">
+        <span class="post-card-tag">Ecuador</span>
+        <img src="/wp-content/uploads/2015/11/P1050668.jpg" alt="Banos Ecuador Adventures" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 12, 2024</p>
+        <h3><a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/">Adventures in Banos Agua Santa, Ecuador</a></h3>
+        <p>Back on the Ecuadorian mainland after Galapagos it was time for the adventure capital &mdash; kayaking, rafting, canyoning and horseback riding&hellip;</p>
+        <a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- Interactive Map -->
+<section class="map-section" id="travel-map-section">
+  <h2 class="section-title">Where Would You Like to Go?</h2>
+  <p class="section-subtitle">Click a pin on the map to explore our stories from that destination.</p>
+  <div class="map-wrap">
+    <div id="travel-map"></div>
+  </div>
+  <div class="map-legend">
+    <a href="/peru/">Peru</a>
+    <a href="/ecuador-july-2024/">Ecuador</a>
+    <a href="/galapagos-june-2024/">Galapagos</a>
+    <a href="/western-australia-julyaugust-2022/">W. Australia</a>
+    <a href="/fiji-2022/">Fiji</a>
+    <a href="/french-polynesia/">Fr. Polynesia</a>
+    <a href="/san-francisco-2022/">San Francisco</a>
+    <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/">USA Parks</a>
+    <a href="/indonesia-bali-and-nearby-islands/">Bali</a>
+    <a href="/australia-cairns/">Queensland</a>
+    <a href="/australia-northern-territory/">Northern Territory</a>
+    <a href="/australia/">S. Australia</a>
+    <a href="/deep-south/">Deep South USA</a>
+    <a href="/cuba/">Cuba</a>
+    <a href="/mexico-yucatan/">Mexico</a>
+    <a href="/california-usa/">California</a>
+    <a href="/hawaii/">Hawaii</a>
+    <a href="/philippines/">Philippines</a>
+    <a href="/vietnam/">Vietnam</a>
+    <a href="/thailand/">Thailand</a>
+    <a href="/cyprus/">Cyprus</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>4Globetrotters</h4>
+      <p>A Danish family of four &mdash; Jesper, Line, Noah and Vitus &mdash; sharing our adventures traveling the world with children since 2015.</p>
+      <div class="social-links" style="margin-top:16px;">
+        <a href="https://www.facebook.com/linemarie.nathan" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+        <a href="https://www.linkedin.com/pub/jesper-boeg/1/401/332" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+        <a href="https://twitter.com/j_boeg" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/about-us-2/">About Us</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/countries-we-are-visiting/">All Countries</a></li>
+        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>4Globetrotters<br>Michael Anchers Vej 25<br>8270 Hojbjerg, Denmark</p>
+      <p style="margin-top:8px;">Phone: +45 51 54 28 20</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2015-2026 4Globetrotters. All rights reserved.
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){ links.classList.toggle('open'); });
+
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  var map = L.map('travel-map', {
+    center: [10, 20],
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 8,
+    scrollWheelZoom: false,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  var pinIcon = L.divIcon({
+    className: 'custom-pin',
+    html: '<svg width="28" height="36" viewBox="0 0 28 36" fill="none"><ellipse cx="14" cy="33" rx="6" ry="3" fill="rgba(0,0,0,.2)"/><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="#c0392b"/><circle cx="14" cy="13" r="5.5" fill="#fff"/></svg>',
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+    popupAnchor: [0, -34]
+  });
+
+  var destinations = [
+    { lat: -13.16, lng: -72.55, title: 'Peru', time: 'July/August 2024', url: '/peru/' },
+    { lat: -1.83, lng: -78.18, title: 'Ecuador', time: 'July 2024', url: '/ecuador-july-2024/' },
+    { lat: -0.95, lng: -90.97, title: 'Galapagos', time: 'June 2024', url: '/galapagos-june-2024/' },
+    { lat: -23.70, lng: 121.63, title: 'Western Australia', time: 'July/August 2022', url: '/western-australia-julyaugust-2022/' },
+    { lat: -17.71, lng: 178.07, title: 'Fiji', time: 'July 2022', url: '/fiji-2022/' },
+    { lat: -17.68, lng: -149.41, title: 'French Polynesia', time: 'May/June 2022', url: '/french-polynesia/' },
+    { lat: 37.77, lng: -122.42, title: 'San Francisco', time: 'May 2022', url: '/san-francisco-2022/' },
+    { lat: 44.43, lng: -110.59, title: 'Yellowstone and Rockies', time: 'July/August 2019', url: '/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/' },
+    { lat: -8.34, lng: 115.09, title: 'Indonesia - Bali', time: 'July/August 2017', url: '/indonesia-bali-and-nearby-islands/' },
+    { lat: -16.92, lng: 145.78, title: 'Queensland', time: 'July 2017', url: '/australia-cairns/' },
+    { lat: -12.46, lng: 130.85, title: 'Northern Territory', time: 'June/July 2017', url: '/australia-northern-territory/' },
+    { lat: -34.93, lng: 138.60, title: 'Australia - Adelaide to Sydney', time: 'Jan/Feb 2016', url: '/australia/' },
+    { lat: 20.80, lng: -156.33, title: 'Hawaii', time: 'February 2016', url: '/hawaii/' },
+    { lat: 34.05, lng: -118.24, title: 'California', time: 'February 2016', url: '/california-usa/' },
+    { lat: 20.65, lng: -87.47, title: 'Mexico - Yucatan', time: 'Feb/March 2016', url: '/mexico-yucatan/' },
+    { lat: 21.52, lng: -77.78, title: 'Cuba', time: 'March/April 2016', url: '/cuba/' },
+    { lat: 30.33, lng: -89.32, title: 'Deep South USA', time: 'April 2016', url: '/deep-south/' },
+    { lat: 12.88, lng: 121.77, title: 'Philippines', time: 'Dec 2015/Jan 2016', url: '/philippines/' },
+    { lat: 14.06, lng: 108.28, title: 'Vietnam', time: 'Nov/Dec 2015', url: '/vietnam/' },
+    { lat: 15.87, lng: 100.99, title: 'Thailand', time: 'Oct/Nov 2015', url: '/thailand/' },
+    { lat: 35.13, lng: 33.43, title: 'Cyprus', time: 'October 2015', url: '/cyprus/' },
+    { lat: 56.26, lng: 9.50, title: 'Denmark (Home)', time: 'Home base', url: '/denmark-preparing-for-the-trip/' }
+  ];
+
+  destinations.forEach(function(d) {
+    var marker = L.marker([d.lat, d.lng], { icon: pinIcon }).addTo(map);
+    marker.bindTooltip(d.title, { direction: 'top', offset: [0, -36], className: 'map-tooltip' });
+    marker.on('click', function(){ window.location.href = d.url; });
+  });
+
+  map.on('click', function(){ map.scrollWheelZoom.enable(); });
+})();
+</script>
 </body>
 </html>

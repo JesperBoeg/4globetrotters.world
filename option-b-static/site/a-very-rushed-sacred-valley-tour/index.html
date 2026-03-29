@@ -1,333 +1,126 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A very rushed Sacred Valley tour | 4Globetrotters</title>
-  <link rel="stylesheet" href="/assets/wp-simple/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/assets/wp-simple/style.css">
-  <style>
-    body { background:#f4f4f4; }
-    .container-card { background:#fff; padding:30px; box-shadow:0 1px 8px rgba(0,0,0,.08); }
-    .text_logo { margin:0; }
-    .text_logo a { color:#222; text-decoration:none; }
-    #menu_row .navbar-nav > li > a { font-weight:600; }
-    .sidebar-box { margin-bottom:22px; padding:16px; background:#fff; border:1px solid #e9e9e9; }
-    .sidebar-box h4 { margin-top:0; margin-bottom:10px; }
-    .sidebar-box ul { margin:0; padding-left:18px; }
-    .dest-list { columns: 2; column-gap: 24px; }
-    .dest-list li { break-inside: avoid; margin: 0 0 8px 0; }
-    .meta { font-size:13px; color:#666; margin-bottom:14px; }
-    .post-card { margin-bottom:28px; border-bottom:1px solid #eee; padding-bottom:22px; }
-    .post-card img { width:100%; height:auto; margin:0 0 10px 0; }
-    .editable article img { display:block; max-width:100%; height:auto; margin:0 0 16px 0; }
-    .editable article .content-image { margin:0 0 18px 0; }
-    .editable article .content-image a { display:block; }
-    .editable article .video-embed { position:relative; width:100%; height:0; padding-bottom:56.25%; margin:0 0 18px 0; }
-    .editable article .video-embed iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-    #footer_row { margin-top:45px; padding:20px 0; background:#f2f2f2; border-top:1px solid #ddd; }
-  </style>
+  <link rel="stylesheet" href="/assets/subpage.css">
 </head>
 <body>
-<header>
-  <div class="container">
-    <h1 class="text_logo"><a href="https://4globetrotters.world/">4Globetrotters</a></h1>
+
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">4Globetrotters</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about-us-2/">About Us</a></li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="/countries-we-are-visiting/">Destinations</a></li>
+    </ul>
   </div>
-  <nav id="menu_row" class="navbar navbar-default" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          <li><a href='/'>Home</a></li>
-<li><a href='/about-us-2/'>About us</a></li>
-<li><a href='/itinerary/'>Travel route (2015/16)</a></li>
-<li class="dropdown">
-  <a href="/countries-we-are-visiting/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Countries <span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-<li><a href='/cuba/'>Cuba</a></li>
-<li><a href='/mexico-yucatan/'>Mexico - Yucatan</a></li>
-<li><a href='/california-usa/'>California - USA</a></li>
-<li><a href='/hawaii/'>Hawaii</a></li>
-<li><a href='/australia/'>Australia - Adelaide to Sydney (January/February 2016)</a></li>
-<li><a href='/philippines/'>Philippines</a></li>
-<li><a href='/vietnam/'>Vietnam</a></li>
-<li><a href='/thailand/'>Thailand</a></li>
-<li><a href='/cyprus/'>Cyprus</a></li>
-<li><a href='/denmark-preparing-for-the-trip/'>Denmark (Preparing for the round-the-world trip)</a></li>
-  </ul>
-</li>
-<li><a href='/blog/'>Blog</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-</header>
+</nav>
 
-<div id="blog_content_row">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="container-card editable">
-          <article>
-  <h1>A very rushed Sacred Valley tour</h1>
-  <p class="meta">By LineogJesper on August 1, 2024</p>
-  <p><img src='/wp-content/uploads/P1020080.jpg' alt='A very rushed Sacred Valley tour'></p>
-  <!-- wp:paragraph -->
-<p>After recovering after the Salkantay trek and getting Line back on her feet we booked the full day Sacred Valley tour. The guide was great, the sights were interesting, the weather was good, the minivan was new and comfortable BUT never have we experienced anything as rushed in our many years of traveling. Along with at least 100 minivans and 1500 other tourists following the same route we were drilled through the sights with just enough time to get out, get introduced to the sights and take a few photos. When we spoke to the guide about it he told us that it used to be a two day tour but due to popular demand it was now all packed in one day. He also explained that you are still able to book it as two separate days but due to the popularity of the one day version that is what most people do. He would, however, strongly recommend spending two days and so would we!</p>
-<!-- /wp:paragraph -->
+<div class="page-hero" style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.65)),url('/wp-content/uploads/P1020080.jpg') center/cover no-repeat">
+    <h1>A very rushed Sacred Valley tour</h1>
+    <p class="page-meta">August 1, 2024</p>
+</div>
 
-<!-- wp:paragraph -->
-<p>At 70 soles per person including buffet lunch the tour is quite cheap, but bear in mind that entry fees are not included. If you already bought the â€œGeneral Bolletoâ€ (130 soles for adults, 70 for children, children under 10 free) you have access to all of them except the salt mines (20 soles). You can also buy a limited Sacred Valley version (70 soles for adults, 40 for children, children under 10 free)</p>
-<!-- /wp:paragraph -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner"><a href="/">Home</a> &rsaquo; <a href="/blog/">Blog</a> &rsaquo; A very rushed Sacred Valley tour</div>
+</div>
 
-<!-- wp:paragraph -->
+<main class="page-content">
+<p><img src='/wp-content/uploads/P1020080.jpg' alt='A very rushed Sacred Valley tour'></p>
+  <p>After recovering after the Salkantay trek and getting Line back on her feet we booked the full day Sacred Valley tour. The guide was great, the sights were interesting, the weather was good, the minivan was new and comfortable BUT never have we experienced anything as rushed in our many years of traveling. Along with at least 100 minivans and 1500 other tourists following the same route we were drilled through the sights with just enough time to get out, get introduced to the sights and take a few photos. When we spoke to the guide about it he told us that it used to be a two day tour but due to popular demand it was now all packed in one day. He also explained that you are still able to book it as two separate days but due to the popularity of the one day version that is what most people do. He would, however, strongly recommend spending two days and so would we!</p>
+<p>At 70 soles per person including buffet lunch the tour is quite cheap, but bear in mind that entry fees are not included. If you already bought the &ldquo;General Bolleto&rdquo; (130 soles for adults, 70 for children, children under 10 free) you have access to all of them except the salt mines (20 soles). You can also buy a limited Sacred Valley version (70 soles for adults, 40 for children, children under 10 free)</p>
 <p>Anyway - this is what we covered in one day from 6am to 7.45pm</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p><strong>Chinchero</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>Our first stop was the historic town of Chinchero - home to Inca ruins and terraces and another clear example of how the Spanish destroyed the upper parts of the buildings but reused the very stable foundations.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4307,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020068.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4308,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020068.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020071.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4309,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020072.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p>After taking in the sights we made another stop to learn more about the dying and weaving of alpaca clothes.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p><strong>Moray</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>The next stop was Moray. A set of terraces that look almost like an amphitheater. Each level has its own microclimate with average temperatures ranging more than 6 degrees from the lower and upper terraces. Not only did the Incas use this to grow different crops suited to different temperatures but it was also used as a laboratory for the Incas to learn more about what crops were better suited to which climate and thus they could use that knowledge in other places.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4310,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020077.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4311,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020077.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020080.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4312,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020089.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p><strong>Maras Salt Mines</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>After a stop at the salt shop to taste various chocolates and corn varieties spiced with salt we went to see the actual salt mines. About 1500 families each own 3-4 basins where water from a salty underground spring is left to dry under the sun for a month before about 300 kg. of salt can be scraped off.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4313,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020095.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4314,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020095.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020096.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4315,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020097.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4316,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020100.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p>Paying 20 soles per person to get a look at the mines from above (you used to be able to get closer) was a quite underwhelming experience. The drive is quite long to get there and after about 10-15 minutes there is not much left to see. We would definitely have preferred skipping the salt mines to be able to spend more time at the other places</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p><strong>Ollantaytambo</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>The ruins at Ollantaytambo are definitely impressive but since there is not a limit to the amount of visitors,  it made Machu Picchu seem deserted in comparison. It was still an impressive site and hard to imagine how the Incas managed to drag stones weighing up to 29 tons from mountain tops several kilometers away. On the opposing cliff side the face of the great Inca king Pachakucha is chiseled into the hard rock.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4317,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020103.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4318,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020103.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020112.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p>We would really have liked to spend more time here as the area is quite big and the less impressive parts seemed almost deserted in comparison to the places we went. Unfortunately we only had about 50 minutes to spend here so we had to hurry on.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p><strong>Pisac</strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>The final stop was the ruins at Pisac. Arriving late there was already more than a 100 vans parked and we had to walk the last few hundred meters to the entry point.&nbsp;</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4320,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020121.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4321,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020121.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020125.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p>Unfortunately the site was closed and it took some arguing and another 20 minutes of waiting before we and about 100 others were allowed to enter. On a positive note the site was not as busy at this point and we managed to get a good look at the site and some pictures before the sun went down. </p>
-<!-- /wp:paragraph -->
-
-<!-- wp:gallery {"linkTo":"none"} -->
-<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><!-- wp:image {"id":4322,"sizeSlug":"large","linkDestination":"none"} -->
-<figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020128.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4323,"sizeSlug":"large","linkDestination":"none"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped"><figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020128.jpg' alt=''></figure>
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020134.jpg' alt=''></figure>
-<!-- /wp:image -->
-
-<!-- wp:image {"id":4324,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large"><img src='/wp-content/uploads/P1020141.jpg' alt=''></figure>
-<!-- /wp:image --></figure>
-<!-- /wp:gallery -->
-
-<!-- wp:paragraph -->
+</figure>
 <p>From here on we made a 30 minute stop at a silver shop in the town of Pisac (supposedly to learn about the craft, but in reality it was more about trying to sell us some overpriced silver). Another stop that we easily could have skipped to have more time at the interesting sights or to get a bit sooner back to Cusco.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
 <p>All in all a day with lots of views and impressions but we were also left with the feeling that we were constantly behind schedule and rushing to get to the next place.</p>
-<!-- /wp:paragraph -->
-  <p>After recovering after the Salkantay trek and getting Line back on her feet we booked the full day Sacred Valley tour. The guide was great, the sights were interesting, the weather was good, the minivan was new and comfortable BUT never have we experienced anything as rushed in our many years of traveling. Along with at least 100 minivans and ...</p>
+<p>After recovering after the Salkantay trek and getting Line back on her feet we booked the full day Sacred Valley tour. The guide was great, the sights were interesting, the weather was good, the minivan was new and comfortable BUT never have we experienced anything as rushed in our many years of traveling. Along with at least 100 minivans and ...</p>
   <p class="meta">Category: <a href='/category/peru/'>Peru</a></p>
-</article>
-        </div>
-      </div>
-      <div class="col-md-4 sidebar sidebar_editable">
-        <div class="sidebar-box">
-          <h4>Connect With Us</h4>
-          <p>
-            <a href="https://www.facebook.com/linemarie.nathan" target="_blank">Facebook</a><br>
-            <a href="https://www.linkedin.com/pub/jesper-boeg/1/401/332" target="_blank">LinkedIn</a><br>
-            <a href="https://twitter.com/j_boeg" target="_blank">Twitter</a>
-          </p>
-        </div>
-        <div class="sidebar-box">
-          <h4>Recent Posts</h4>
-          <ul>
-            <li><a href='/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/'>Wildlife experience extraordinaire in Puerto Maldonado, Amazonas</a></li>
-<li><a href='/amazing-rainbow-mountain-and-red-valley-tour/'>Amazing Rainbow Mountain and Red Valley tour</a></li>
-<li><a href='/a-very-rushed-sacred-valley-tour/'>A very rushed Sacred Valley tour</a></li>
-<li><a href='/70-km-salkantay-5d-4n-trek/'>70 km Salkantay 5D/4N trek</a></li>
-<li><a href='/homestay-on-the-titicaca-lake/'>Homestay on the Titicaca Lake</a></li>
-<li><a href='/4-amazing-days-in-arequipa/'>4 amazing days in Arequipa</a></li>
-<li><a href='/easy-days-in-lima-paracas-huacachina-and-nazca/'>Easy days in Lima, Paracas, Huacachina and Nazca</a></li>
-<li><a href='/beautiful-views-altitude-sickness-and-hiking-at-the-cotopaxi-national-park/'>Beautiful views, altitude sickness and hiking at the Cotopaxi national park</a></li>
-<li><a href='/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/'>Kayaking, rafting, canyoning, ziplines, hiking and horseback riding in Banos Agua Santa</a></li>
-<li><a href='/santa-cruz-hammerheads-las-grietas-and-the-bellavista-beach/'>Santa Cruz: Hammerheads, Las Grietas and the Bellavista Beach</a></li>
-          </ul>
-        </div>
-        <div class="sidebar-box">
-          <h4>Contact information</h4>
-          <p>4globetrotters, Michael Anchers Vej 25. 8270 Hojbjerg. Phone: +45 51 54 28 20</p>
-        </div>
-        <div class="sidebar-box">
-          <h4>Pages</h4>
-          <ul>
-            <li><a href='/about-us-2/'>About us</a></li>
-<li><a href='/australia/'>Australia - Adelaide to Sydney (January/February 2016)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/blog/'>Blog</a></li>
-<li><a href='/california-usa/'>California - USA</a></li>
-<li><a href='/countries-we-are-visiting/'>Countries we are visiting</a></li>
-<li><a href='/cuba/'>Cuba</a></li>
-<li><a href='/cyprus/'>Cyprus</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-<li><a href='/denmark-preparing-for-the-trip/'>Denmark (Preparing for the round-the-world trip)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/hawaii/'>Hawaii</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/mexico-yucatan/'>Mexico - Yucatan</a></li>
-<li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/philippines/'>Philippines</a></li>
-<li><a href='/privacy-policy/'>Privacy  policy</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/thailand/'>Thailand</a></li>
-<li><a href='/itinerary/'>Travel route (2015/16)</a></li>
-<li><a href='/about-us/'>Traveling the world with children</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/vietnam/'>Vietnam</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-          </ul>
-        </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>4Globetrotters</h4>
+      <p>A Danish family of four &mdash; Jesper, Line, Noah and Vitus &mdash; sharing our adventures traveling the world with children since 2015.</p>
+      <div class="social-links" style="margin-top:16px;">
+        <a href="https://www.facebook.com/linemarie.nathan" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+        <a href="https://www.linkedin.com/pub/jesper-boeg/1/401/332" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+        <a href="https://twitter.com/j_boeg" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
       </div>
     </div>
-  </div>
-</div>
-
-<div id="footer_row">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6"><p id="copyright">&copy; 2015-2026 4Globetrotters</p></div>
-      <div class="col-md-6"><p id="credit">Static Option B starter build</p></div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/about-us-2/">About Us</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/countries-we-are-visiting/">All Countries</a></li>
+        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>4Globetrotters<br>Michael Anchers Vej 25<br>8270 Hojbjerg, Denmark</p>
+      <p style="margin-top:8px;">Phone: +45 51 54 28 20</p>
     </div>
   </div>
-</div>
+  <div class="footer-bottom">
+    &copy; 2015-2026 4Globetrotters. All rights reserved.
+  </div>
+</footer>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="/assets/wp-simple/js/bootstrap.min.js"></script>
+<script>
+(function(){
+  var t = document.getElementById('navToggle');
+  var l = document.getElementById('navLinks');
+  t.addEventListener('click', function(){ l.classList.toggle('open'); });
+  var n = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    n.classList.toggle('scrolled', window.scrollY > 20);
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,142 @@
+/* ── 4Globetrotters — Shared Subpage Styles ──────────────────────── */
+/* Used by all pages except the homepage (which has inline styles)    */
+
+/* ── Reset & Base ────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #333; line-height: 1.7; background: #fff; }
+a { color: #c0392b; text-decoration: none; }
+a:hover { color: #96281b; }
+img { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; line-height: 1.3; }
+
+/* ── Navigation ──────────────────────────────── */
+.site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.97); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0,0,0,.06); transition: box-shadow .3s; }
+.site-nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.5px; }
+.nav-logo:hover { color: #1a1a1a; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a { font-size: .88rem; font-weight: 500; color: #555; letter-spacing: .3px; transition: color .2s; text-transform: uppercase; }
+.nav-links a:hover { color: #c0392b; }
+.nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; }
+
+/* ── Page Header / Hero Banner ───────────────── */
+.page-hero { background: #1a1a1a; padding: 100px 24px 60px; margin-top: 64px; text-align: center; }
+.page-hero h1 { color: #fff; font-size: clamp(1.8rem, 4vw, 2.8rem); max-width: 800px; margin: 0 auto 12px; }
+.page-hero .page-meta { color: rgba(255,255,255,.6); font-size: .9rem; font-family: 'Inter', sans-serif; }
+.page-hero .page-meta a { color: rgba(255,255,255,.75); border-bottom: 1px solid rgba(255,255,255,.3); }
+.page-hero .page-meta a:hover { color: #fff; }
+
+/* ── Breadcrumb ──────────────────────────────── */
+.breadcrumb-bar { background: #f8f8f8; border-bottom: 1px solid #eee; padding: 12px 24px; font-size: .82rem; color: #999; }
+.breadcrumb-bar a { color: #777; }
+.breadcrumb-bar a:hover { color: #c0392b; }
+.breadcrumb-inner { max-width: 900px; margin: 0 auto; }
+
+/* ── Main Content ────────────────────────────── */
+.page-content { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* Article text */
+.page-content p { margin-bottom: 18px; font-size: 1.02rem; color: #444; }
+.page-content h1 { font-size: 2rem; margin-bottom: 20px; color: #1a1a1a; }
+.page-content h2 { font-size: 1.5rem; margin: 40px 0 16px; color: #1a1a1a; }
+.page-content h3 { font-size: 1.25rem; margin: 32px 0 12px; color: #1a1a1a; }
+.page-content ul, .page-content ol { margin: 0 0 18px 24px; color: #444; }
+.page-content li { margin-bottom: 6px; }
+.page-content blockquote { border-left: 4px solid #c0392b; padding: 12px 20px; margin: 24px 0; background: #faf8f8; font-style: italic; color: #555; }
+
+/* Article images — standalone (in <p> or <figure> outside galleries) */
+.page-content img { border-radius: 8px; margin: 24px 0; max-width: 100%; height: auto; }
+.page-content p > img { display: block; width: 100%; height: auto; max-height: 620px; object-fit: cover; margin: 32px 0; }
+.page-content figure { margin: 32px 0; }
+.page-content figure img { margin: 0; width: 100%; height: auto; max-height: 620px; object-fit: cover; }
+.page-content figcaption { font-size: .85rem; color: #888; text-align: center; margin-top: 8px; }
+
+/* Standalone wp-block-image (not inside a gallery) */
+.page-content .wp-block-image { margin: 32px 0; }
+.page-content .wp-block-image img { width: 100%; height: auto; max-height: 620px; object-fit: cover; border-radius: 8px; }
+
+/* WordPress gallery blocks — max 2 per row, large images */
+.page-content .wp-block-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 36px 0;
+}
+/* Single image in gallery → full width */
+.page-content .wp-block-gallery:has(> .wp-block-image:only-child) {
+    grid-template-columns: 1fr;
+}
+/* Odd last image (3rd, 5th…) → span full width so no orphan column */
+.page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) {
+    grid-column: 1 / -1;
+}
+.page-content .wp-block-gallery > .wp-block-image { margin: 0; }
+.page-content .wp-block-gallery > .wp-block-image img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+/* Full-width images (single or orphan) get extra height */
+.page-content .wp-block-gallery:has(> .wp-block-image:only-child) img,
+.page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) img {
+    height: 520px;
+}
+
+/* Video embeds */
+.video-embed { position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin: 24px 0; border-radius: 8px; overflow: hidden; }
+.video-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+/* Meta info */
+.article-meta { font-size: .85rem; color: #999; margin-bottom: 24px; font-family: 'Inter', sans-serif; }
+.article-meta a { color: #c0392b; }
+
+/* ── Post Cards (destination pages, blog listings) ── */
+.post-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px; margin-top: 32px; }
+.post-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.06); transition: transform .3s, box-shadow .3s; }
+.post-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+.post-card-img { aspect-ratio: 16/9; overflow: hidden; display: block; }
+.post-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; border-radius: 0; margin: 0; }
+.post-card:hover .post-card-img img { transform: scale(1.05); }
+.post-card-body { padding: 20px 24px 24px; }
+.post-card-body h3 { font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4; }
+.post-card-body h3 a { color: #1a1a1a; transition: color .2s; }
+.post-card-body h3 a:hover { color: #c0392b; }
+.post-card-body h2 { font-size: 1.1rem; margin: 0 0 8px; line-height: 1.4; }
+.post-card-body h2 a { color: #1a1a1a; transition: color .2s; }
+.post-card-body h2 a:hover { color: #c0392b; }
+.post-card-body .meta { font-size: .78rem; color: #999; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; font-family: 'Inter', sans-serif; }
+.post-card-body p { font-size: .9rem; color: #666; line-height: 1.6; margin-bottom: 10px; }
+.post-card-body .read-more { color: #c0392b; font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .3px; }
+
+/* ── Destination list (countries-we-are-visiting, itinerary) ── */
+.dest-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin: 24px 0; list-style: none; padding: 0; }
+.dest-list-grid li a { display: block; padding: 14px 20px; background: #f8f8f8; border-radius: 8px; color: #333; font-weight: 500; transition: all .2s; border: 1px solid #eee; }
+.dest-list-grid li a:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+
+/* ── Footer ──────────────────────────────────── */
+.site-footer { background: #111; color: #aaa; padding: 48px 24px 32px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+.footer-col h4 { color: #fff; font-size: 1rem; margin-bottom: 16px; font-family: 'Playfair Display', serif; }
+.footer-col p, .footer-col a { font-size: .88rem; color: #888; line-height: 1.8; }
+.footer-col a:hover { color: #fff; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 6px; }
+.footer-bottom { max-width: 1200px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid #222; text-align: center; font-size: .82rem; color: #555; }
+.social-links { display: flex; gap: 16px; margin-top: 8px; }
+.social-links a { color: #888; font-size: 1.1rem; transition: color .2s; }
+.social-links a:hover { color: #fff; }
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #fff; padding: 24px; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+  .page-hero { padding: 90px 20px 40px; }
+  .page-content { padding: 32px 20px 60px; }
+  .post-cards { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+}
