@@ -15,13 +15,18 @@
     .dest-intro { max-width: 720px; margin: 40px auto 8px; text-align: center; }
     .dest-intro p { font-size: 1.05rem; color: #555; line-height: 1.8; }
     .dest-map-filter { margin: 26px 0 12px; padding: 0; background: transparent; border-radius: 0; }
-    .dest-map-filter-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .dest-map-filter h3 { color: #1a1a1a; margin: 0; font-size: 1rem; }
-    .dest-map-filter p { color: #666; margin: 0; font-size: .82rem; }
-    .dest-map-filter button { border: 1px solid #ddd; background: #fff; color: #555; border-radius: 999px; padding: 6px 11px; font-size: .75rem; cursor: pointer; }
-    .dest-map-filter button:hover { border-color: #c0392b; color: #c0392b; }
     .dest-map-summary { margin: 0 0 10px; font-size: .82rem; color: #8a8a8a; }
-    #destinations-map { height: 420px; border-radius: 10px; overflow: hidden; }
+    .map-section { background: transparent; padding: 40px 24px 24px; }
+    .map-section .section-title { color: #1a1a1a; text-align: center; font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 20px; }
+    .map-wrap { max-width: 1200px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 40px rgba(0,0,0,.4); }
+    #destinations-map { height: 520px; width: 100%; }
+    .map-legend { max-width: 1200px; margin: 20px auto 0; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .map-legend a, .map-legend button { display: inline-block; padding: 6px 16px; background: #f5f5f5; color: #555; font-size: .8rem; border-radius: 20px; transition: all .2s; border: 1px solid #ddd; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .map-legend a:hover, .map-legend button:hover, .map-legend button.active { background: #c0392b; color: #fff; border-color: #c0392b; }
+    .map-tooltip { font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; }
+    .leaflet-popup-content-wrapper { border-radius: 10px; font-family: 'Inter', sans-serif; }
+    .leaflet-popup-content { margin: 12px 16px; font-size: .9rem; line-height: 1.5; }
+    .leaflet-container { cursor: pointer; }
     .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; margin-top: 36px; }
     .dest-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.07); transition: transform .3s, box-shadow .3s; }
     .dest-card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(0,0,0,.12); }
@@ -37,7 +42,8 @@
     .dest-card-body p { font-size: .88rem; color: #666; line-height: 1.65; margin-bottom: 12px; }
     .dest-card-body .read-more { color: #c0392b; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
     .dest-card.hidden-by-map { display: none; }
-    @media (max-width: 600px) { .dest-grid { grid-template-columns: 1fr; } .dest-hero { padding: 90px 20px 60px; } #destinations-map { height: 320px; } }
+    .page-content { max-width: 1200px; }
+    @media (max-width: 600px) { .dest-grid { grid-template-columns: 1fr; } .dest-hero { padding: 90px 20px 60px; } #destinations-map { height: 380px; } .map-section { padding: 40px 16px; } }
   </style>
 </head>
 <body>
@@ -64,23 +70,39 @@
   <div class="breadcrumb-inner"><a href="/">Home</a> &rsaquo; Destinations</div>
 </div>
 
-<main class="page-content">
-
-<div class="dest-intro">
-  <p>From the wild Amazon jungle to the turquoise lagoons of French Polynesia, from ancient Inca trails to the red deserts of Western Australia &mdash; every destination has been an adventure and an education. Click any destination below to read our stories.</p>
-</div>
-
-<section class="dest-map-filter" aria-label="Filter destinations by map">
-  <div class="dest-map-filter-head">
-    <div>
-      <h3>World Map Filter</h3>
-      <p>Click a pin to filter destinations by that location.</p>
-    </div>
-    <button id="clearMapFilter" type="button">Clear map filter</button>
+<section class="map-section" id="travel-map-section">
+  <h2 class="section-title">Click a pin on the map to explore our stories from that destination.</h2>
+  <div class="map-wrap">
+    <div id="destinations-map"></div>
   </div>
-  <p id="destMapSummary" class="dest-map-summary">Showing all destinations.</p>
-  <div id="destinations-map"></div>
+  <div class="map-legend" id="mapLegend">
+    <button type="button" data-filter="/peru/">Peru</button>
+    <button type="button" data-filter="/ecuador-july-2024/">Ecuador</button>
+    <button type="button" data-filter="/galapagos-june-2024/">Galapagos</button>
+    <button type="button" data-filter="/western-australia-julyaugust-2022/">W. Australia</button>
+    <button type="button" data-filter="/fiji-2022/">Fiji</button>
+    <button type="button" data-filter="/french-polynesia/">Fr. Polynesia</button>
+    <button type="button" data-filter="/san-francisco-2022/">San Francisco</button>
+    <button type="button" data-filter="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/">USA Parks</button>
+    <button type="button" data-filter="/indonesia-bali-and-nearby-islands/">Bali</button>
+    <button type="button" data-filter="/australia-cairns/">Queensland</button>
+    <button type="button" data-filter="/australia-northern-territory/">Northern Territory</button>
+    <button type="button" data-filter="/australia/">S. Australia</button>
+    <button type="button" data-filter="/deep-south/">Deep South USA</button>
+    <button type="button" data-filter="/cuba/">Cuba</button>
+    <button type="button" data-filter="/mexico-yucatan/">Mexico</button>
+    <button type="button" data-filter="/california-usa/">California</button>
+    <button type="button" data-filter="/hawaii/">Hawaii</button>
+    <button type="button" data-filter="/philippines/">Philippines</button>
+    <button type="button" data-filter="/vietnam/">Vietnam</button>
+    <button type="button" data-filter="/thailand/">Thailand</button>
+    <button type="button" data-filter="/cyprus/">Cyprus</button>
+  </div>
+  <p id="destMapSummary" class="dest-map-summary" style="color:#888; text-align:center; margin-top:14px;">Showing all destinations.</p>
+  <div style="text-align:center; margin-top:10px;"><button type="button" id="clearMapFilter" style="padding:6px 18px; background:#fff; color:#c0392b; border:1px solid #c0392b; border-radius:20px; cursor:pointer; font-size:.8rem; font-family:Inter,sans-serif;">Show All Destinations</button></div>
 </section>
+
+<main class="page-content">
 
 <div class="dest-grid" id="destGrid">
 
@@ -381,11 +403,11 @@
       var visible = 0;
 
       cards.forEach(function(card) {
-        var haystack = card.textContent.toLowerCase();
-        var matchMap = !mapQuery || haystack.indexOf(mapQuery) !== -1;
-        var match = matchMap;
-        card.style.display = match ? '' : 'none';
-        if (match) { visible += 1; }
+        var link = card.querySelector('a');
+        var href = link ? link.getAttribute('href') : '';
+        var matchMap = !mapQuery || href === mapQuery;
+        card.style.display = matchMap ? '' : 'none';
+        if (matchMap) { visible += 1; }
       });
 
       if (!mapQuery) {
@@ -398,91 +420,88 @@
     if (window.L && document.getElementById('destinations-map')) {
       var map = L.map('destinations-map', {
         center: [10, 20],
-        zoom: 1,
-        minZoom: 1,
-        maxZoom: 7,
-        zoomSnap: 0.1,
+        zoom: 2,
+        minZoom: 2,
+        maxZoom: 8,
         scrollWheelZoom: false,
-        dragging: false,
-        touchZoom: false,
-        doubleClickZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        worldCopyJump: false,
         zoomControl: false
       });
 
-      map.setMaxBounds([[-85, -180], [85, 180]]);
-      map.options.maxBoundsViscosity = 1.0;
-
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         subdomains: 'abcd',
-        noWrap: true,
         maxZoom: 19
       }).addTo(map);
 
-      // Fit near edge-to-edge while keeping all destination markers in view.
-      var worldViewBounds = [[-42, -178], [78, 179]];
-      map.fitBounds(worldViewBounds, {
-        paddingTopLeft: [6, 6],
-        paddingBottomRight: [6, 32]
-      });
-      map.setMinZoom(map.getZoom());
-
       var pinIcon = L.divIcon({
         className: 'custom-pin',
-        html: '<svg width="24" height="32" viewBox="0 0 28 36" fill="none"><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="#c0392b"/><circle cx="14" cy="13" r="5.5" fill="#fff"/></svg>',
-        iconSize: [24, 32],
-        iconAnchor: [12, 32]
+        html: '<svg width="28" height="36" viewBox="0 0 28 36" fill="none"><ellipse cx="14" cy="33" rx="6" ry="3" fill="rgba(0,0,0,.2)"/><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="#c0392b"/><circle cx="14" cy="13" r="5.5" fill="#fff"/></svg>',
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+        popupAnchor: [0, -34]
       });
 
       var destinations = [
-        { lat: -13.16, lng: -72.55, title: 'Peru' },
-        { lat: -1.83, lng: -78.18, title: 'Ecuador' },
-        { lat: -0.95, lng: -90.97, title: 'Galapagos' },
-        { lat: -23.70, lng: 121.63, title: 'Western Australia' },
-        { lat: -17.71, lng: 178.07, title: 'Fiji' },
-        { lat: -17.68, lng: -149.41, title: 'French Polynesia' },
-        { lat: 37.77, lng: -122.42, title: 'San Francisco' },
-        { lat: 44.43, lng: -110.59, title: 'Rocky Mountains' },
-        { lat: -8.34, lng: 115.09, title: 'Indonesia' },
-        { lat: -16.92, lng: 145.78, title: 'Queensland' },
-        { lat: -12.46, lng: 130.85, title: 'Northern Territory' },
-        { lat: -34.93, lng: 138.60, title: 'Australia' },
-        { lat: 30.33, lng: -89.32, title: 'Deep South USA' },
-        { lat: 21.52, lng: -77.78, title: 'Cuba' },
-        { lat: 20.65, lng: -87.47, title: 'Mexico' },
-        { lat: 34.05, lng: -118.24, title: 'California' },
-        { lat: 20.80, lng: -156.33, title: 'Hawaii' },
-        { lat: 12.88, lng: 121.77, title: 'Philippines' },
-        { lat: 14.06, lng: 108.28, title: 'Vietnam' },
-        { lat: 15.87, lng: 100.99, title: 'Thailand' },
-        { lat: 35.13, lng: 33.43, title: 'Cyprus' },
-        { lat: 56.26, lng: 9.50, title: 'Denmark' }
+        { lat: -13.16, lng: -72.55, title: 'Peru', filter: '/peru/' },
+        { lat: -1.83, lng: -78.18, title: 'Ecuador', filter: '/ecuador-july-2024/' },
+        { lat: -0.95, lng: -90.97, title: 'Galapagos', filter: '/galapagos-june-2024/' },
+        { lat: -23.70, lng: 121.63, title: 'Western Australia', filter: '/western-australia-julyaugust-2022/' },
+        { lat: -17.71, lng: 178.07, title: 'Fiji', filter: '/fiji-2022/' },
+        { lat: -17.68, lng: -149.41, title: 'French Polynesia', filter: '/french-polynesia/' },
+        { lat: 37.77, lng: -122.42, title: 'San Francisco', filter: '/san-francisco-2022/' },
+        { lat: 44.43, lng: -110.59, title: 'Yellowstone and Rockies', filter: '/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/' },
+        { lat: -8.34, lng: 115.09, title: 'Indonesia - Bali', filter: '/indonesia-bali-and-nearby-islands/' },
+        { lat: -16.92, lng: 145.78, title: 'Queensland', filter: '/australia-cairns/' },
+        { lat: -12.46, lng: 130.85, title: 'Northern Territory', filter: '/australia-northern-territory/' },
+        { lat: -34.93, lng: 138.60, title: 'Australia - Adelaide to Sydney', filter: '/australia/' },
+        { lat: 20.80, lng: -156.33, title: 'Hawaii', filter: '/hawaii/' },
+        { lat: 34.05, lng: -118.24, title: 'California', filter: '/california-usa/' },
+        { lat: 20.65, lng: -87.47, title: 'Mexico - Yucatan', filter: '/mexico-yucatan/' },
+        { lat: 21.52, lng: -77.78, title: 'Cuba', filter: '/cuba/' },
+        { lat: 30.33, lng: -89.32, title: 'Deep South USA', filter: '/deep-south/' },
+        { lat: 12.88, lng: 121.77, title: 'Philippines', filter: '/philippines/' },
+        { lat: 14.06, lng: 108.28, title: 'Vietnam', filter: '/vietnam/' },
+        { lat: 15.87, lng: 100.99, title: 'Thailand', filter: '/thailand/' },
+        { lat: 35.13, lng: 33.43, title: 'Cyprus', filter: '/cyprus/' },
+        { lat: 56.26, lng: 9.50, title: 'Denmark (Home)', filter: '/denmark-preparing-for-the-trip/' }
       ];
 
       destinations.forEach(function(d) {
         var marker = L.marker([d.lat, d.lng], { icon: pinIcon }).addTo(map);
-        marker.bindTooltip(d.title, { direction: 'top', offset: [0, -28] });
+        marker.bindTooltip(d.title, { direction: 'top', offset: [0, -36], className: 'map-tooltip' });
         marker.on('click', function() {
-          mapFilterTerm = d.title;
+          mapFilterTerm = d.filter || d.title;
           refresh();
           document.getElementById('destGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       });
 
+      map.on('click', function(){ map.scrollWheelZoom.enable(); });
+
+      // Legend buttons filter cards
+      var legendBtns = document.querySelectorAll('#mapLegend button[data-filter]');
+      legendBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          legendBtns.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          mapFilterTerm = btn.getAttribute('data-filter');
+          refresh();
+          document.getElementById('destGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // Clear filter button
       var clearBtn = document.getElementById('clearMapFilter');
       if (clearBtn) {
         clearBtn.addEventListener('click', function() {
+          legendBtns.forEach(function(b) { b.classList.remove('active'); });
           mapFilterTerm = '';
           refresh();
-          map.fitBounds(worldViewBounds, {
-            paddingTopLeft: [6, 6],
-            paddingBottomRight: [6, 32]
-          });
         });
       }
+
+      // Click map background to reset
+      map.on('contextmenu', function(e) { L.DomEvent.preventDefault(e); });
     }
   }
 })();
