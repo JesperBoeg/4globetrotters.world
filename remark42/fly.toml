@@ -1,0 +1,63 @@
+# Fly.io deployment config for Remark42 comment server
+# App name must be globally unique — change if "4globetrotters-comments" is taken
+app = "4globetrotters-comments"
+primary_region = "ams"
+
+[build]
+  image = "umputun/remark42:latest"
+
+[env]
+  # The public URL where Remark42 will live (Fly.io subdomain — change if you use a custom domain)
+  REMARK_URL    = "https://4globetrotters-comments.fly.dev"
+  SITE          = "4globetrotters"
+
+  # Allow anonymous comments — they go into moderation queue first
+  AUTH_ANON     = "true"
+  ANON_VOTE     = "false"
+
+  # Moderation: all anonymous comments need approval before appearing
+  AUTH_ANON_ALLOWED_TIMES = "1m"
+
+  # Scoring / voting
+  LOW_SCORE      = "-5"
+  CRITICAL_SCORE = "-10"
+  POSITIVE_SCORE = "true"
+  VOTES_IP       = "true"
+
+  # Notify admin by email when new comments arrive (fill in your address)
+  NOTIFY_EMAIL_FROM = "comments@4globetrotters.world"
+  # SMTP details — set these as secrets (see deploy.ps1)
+  # SMTP_HOST / SMTP_PORT / SMTP_USERNAME / SMTP_PASSWORD
+
+  # Cache
+  CACHE_MAX_ITEMS = "1000"
+  CACHE_MAX_SIZE  = "50000000"
+
+  # Blocklist obvious spam patterns
+  RESTRICT_SAME_IP_SECS = "60"
+
+# Secrets set via: fly secrets set SECRET=... ADMIN_PASSWD=... (see deploy.ps1)
+# Do NOT put real secrets in this file.
+
+[[mounts]]
+  source      = "remark42_data"
+  destination = "/srv/var"
+
+[http_service]
+  internal_port       = 8080
+  force_https         = true
+  auto_stop_machines  = true   # free-tier friendly: sleeps when idle
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval     = "30s"
+    method       = "GET"
+    path         = "/ping"
+    timeout      = "5s"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
