@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Destinations We Have Visited | 4Globetrotters</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/subpage.css">
   <style>
@@ -13,6 +14,14 @@
     .dest-hero p { color: rgba(255,255,255,.88); font-family: 'Inter', sans-serif; font-size: clamp(.95rem, 2vw, 1.15rem); max-width: 640px; margin: 0 auto; line-height: 1.7; }
     .dest-intro { max-width: 720px; margin: 40px auto 8px; text-align: center; }
     .dest-intro p { font-size: 1.05rem; color: #555; line-height: 1.8; }
+    .dest-map-filter { margin: 26px 0 12px; padding: 0; background: transparent; border-radius: 0; }
+    .dest-map-filter-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .dest-map-filter h3 { color: #1a1a1a; margin: 0; font-size: 1rem; }
+    .dest-map-filter p { color: #666; margin: 0; font-size: .82rem; }
+    .dest-map-filter button { border: 1px solid #ddd; background: #fff; color: #555; border-radius: 999px; padding: 6px 11px; font-size: .75rem; cursor: pointer; }
+    .dest-map-filter button:hover { border-color: #c0392b; color: #c0392b; }
+    .dest-map-summary { margin: 0 0 10px; font-size: .82rem; color: #8a8a8a; }
+    #destinations-map { height: 420px; border-radius: 10px; overflow: hidden; }
     .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; margin-top: 36px; }
     .dest-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.07); transition: transform .3s, box-shadow .3s; }
     .dest-card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(0,0,0,.12); }
@@ -27,7 +36,8 @@
     .dest-card-body .dest-when { font-size: .8rem; color: #999; font-family: 'Inter', sans-serif; margin-bottom: 10px; }
     .dest-card-body p { font-size: .88rem; color: #666; line-height: 1.65; margin-bottom: 12px; }
     .dest-card-body .read-more { color: #c0392b; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
-    @media (max-width: 600px) { .dest-grid { grid-template-columns: 1fr; } .dest-hero { padding: 90px 20px 60px; } }
+    .dest-card.hidden-by-map { display: none; }
+    @media (max-width: 600px) { .dest-grid { grid-template-columns: 1fr; } .dest-hero { padding: 90px 20px 60px; } #destinations-map { height: 320px; } }
   </style>
 </head>
 <body>
@@ -60,7 +70,19 @@
   <p>From the wild Amazon jungle to the turquoise lagoons of French Polynesia, from ancient Inca trails to the red deserts of Western Australia &mdash; every destination has been an adventure and an education. Click any destination below to read our stories.</p>
 </div>
 
-<div class="dest-grid">
+<section class="dest-map-filter" aria-label="Filter destinations by map">
+  <div class="dest-map-filter-head">
+    <div>
+      <h3>World Map Filter</h3>
+      <p>Click a pin to filter destinations by that location.</p>
+    </div>
+    <button id="clearMapFilter" type="button">Clear map filter</button>
+  </div>
+  <p id="destMapSummary" class="dest-map-summary">Showing all destinations.</p>
+  <div id="destinations-map"></div>
+</section>
+
+<div class="dest-grid" id="destGrid">
 
 <div class="dest-card">
   <a href="/peru/" class="dest-card-img"><img src="/wp-content/uploads/P1020357.jpg" alt="Peru"></a>
@@ -338,6 +360,7 @@
   </div>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function(){
   var t = document.getElementById('navToggle');
@@ -347,6 +370,121 @@
   window.addEventListener('scroll', function(){
     n.classList.toggle('scrolled', window.scrollY > 20);
   });
+
+  var summary = document.getElementById('destMapSummary');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('#destGrid .dest-card'));
+  var mapFilterTerm = '';
+
+  if (cards.length) {
+    var refresh = function() {
+      var mapQuery = mapFilterTerm.trim().toLowerCase();
+      var visible = 0;
+
+      cards.forEach(function(card) {
+        var haystack = card.textContent.toLowerCase();
+        var matchMap = !mapQuery || haystack.indexOf(mapQuery) !== -1;
+        var match = matchMap;
+        card.style.display = match ? '' : 'none';
+        if (match) { visible += 1; }
+      });
+
+      if (!mapQuery) {
+        summary.textContent = 'Showing all destinations.';
+      } else {
+        summary.textContent = 'Showing ' + visible + ' destination(s) for map filter "' + mapFilterTerm + '".';
+      }
+    };
+
+    if (window.L && document.getElementById('destinations-map')) {
+      var map = L.map('destinations-map', {
+        center: [10, 20],
+        zoom: 1,
+        minZoom: 1,
+        maxZoom: 7,
+        zoomSnap: 0.1,
+        scrollWheelZoom: false,
+        dragging: false,
+        touchZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        worldCopyJump: false,
+        zoomControl: false
+      });
+
+      map.setMaxBounds([[-85, -180], [85, 180]]);
+      map.options.maxBoundsViscosity = 1.0;
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        subdomains: 'abcd',
+        noWrap: true,
+        maxZoom: 19
+      }).addTo(map);
+
+      // Fit near edge-to-edge while keeping all destination markers in view.
+      var worldViewBounds = [[-42, -178], [78, 179]];
+      map.fitBounds(worldViewBounds, {
+        paddingTopLeft: [6, 6],
+        paddingBottomRight: [6, 32]
+      });
+      map.setMinZoom(map.getZoom());
+
+      var pinIcon = L.divIcon({
+        className: 'custom-pin',
+        html: '<svg width="24" height="32" viewBox="0 0 28 36" fill="none"><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="#c0392b"/><circle cx="14" cy="13" r="5.5" fill="#fff"/></svg>',
+        iconSize: [24, 32],
+        iconAnchor: [12, 32]
+      });
+
+      var destinations = [
+        { lat: -13.16, lng: -72.55, title: 'Peru' },
+        { lat: -1.83, lng: -78.18, title: 'Ecuador' },
+        { lat: -0.95, lng: -90.97, title: 'Galapagos' },
+        { lat: -23.70, lng: 121.63, title: 'Western Australia' },
+        { lat: -17.71, lng: 178.07, title: 'Fiji' },
+        { lat: -17.68, lng: -149.41, title: 'French Polynesia' },
+        { lat: 37.77, lng: -122.42, title: 'San Francisco' },
+        { lat: 44.43, lng: -110.59, title: 'Rocky Mountains' },
+        { lat: -8.34, lng: 115.09, title: 'Indonesia' },
+        { lat: -16.92, lng: 145.78, title: 'Queensland' },
+        { lat: -12.46, lng: 130.85, title: 'Northern Territory' },
+        { lat: -34.93, lng: 138.60, title: 'Australia' },
+        { lat: 30.33, lng: -89.32, title: 'Deep South USA' },
+        { lat: 21.52, lng: -77.78, title: 'Cuba' },
+        { lat: 20.65, lng: -87.47, title: 'Mexico' },
+        { lat: 34.05, lng: -118.24, title: 'California' },
+        { lat: 20.80, lng: -156.33, title: 'Hawaii' },
+        { lat: 12.88, lng: 121.77, title: 'Philippines' },
+        { lat: 14.06, lng: 108.28, title: 'Vietnam' },
+        { lat: 15.87, lng: 100.99, title: 'Thailand' },
+        { lat: 35.13, lng: 33.43, title: 'Cyprus' },
+        { lat: 56.26, lng: 9.50, title: 'Denmark' }
+      ];
+
+      destinations.forEach(function(d) {
+        var marker = L.marker([d.lat, d.lng], { icon: pinIcon }).addTo(map);
+        marker.bindTooltip(d.title, { direction: 'top', offset: [0, -28] });
+        marker.on('click', function() {
+          mapFilterTerm = d.title;
+          refresh();
+          document.getElementById('destGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      var clearBtn = document.getElementById('clearMapFilter');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          mapFilterTerm = '';
+          refresh();
+          map.fitBounds(worldViewBounds, {
+            paddingTopLeft: [6, 6],
+            paddingBottomRight: [6, 32]
+          });
+        });
+      }
+    }
+  }
 })();
 </script>
 </body>
