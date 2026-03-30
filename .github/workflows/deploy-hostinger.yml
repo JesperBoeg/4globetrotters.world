@@ -17,7 +17,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Deploy via FTPS (FTP root)
+      - name: Deploy via FTPS to public_html
         env:
           FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
           FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
@@ -25,21 +25,19 @@ jobs:
         run: |
           lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" << 'EOF'
           set ftp:ssl-force true
-          set ftp:ssl-protect-data true
-          set ftp:passive-mode true
+          set ftp:ssl-protect-data false
+          set ftp:passive-mode false
           set ssl:verify-certificate false
           set cmd:fail-exit true
-          set net:timeout 60
-          set net:max-retries 5
+          set net:timeout 30
+          set net:max-retries 3
           set net:reconnect-interval-base 5
-          set net:reconnect-interval-max 30
+          set net:reconnect-interval-max 15
           set xfer:clobber on
 
-          # Debug: print remote cwd and top-level listing for path verification.
           pwd
           cls -la
 
-          # Many Hostinger FTP users are chrooted already; deploy to FTP root.
           mirror -R \
             --verbose \
             --ignore-time \
@@ -48,7 +46,7 @@ jobs:
             --exclude-glob .github \
             --exclude-glob backup \
             --exclude-glob wp-content/uploads \
-            option-b-static/site .
+            option-b-static/site public_html/
 
           quit
           EOF
