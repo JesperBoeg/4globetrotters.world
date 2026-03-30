@@ -62,6 +62,9 @@
     .dest-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 60%); display: flex; align-items: flex-end; padding: 20px; }
     .dest-card-overlay h3 { color: #fff; font-size: 1.15rem; text-shadow: 0 1px 6px rgba(0,0,0,.4); }
     .dest-card-overlay span { display: block; color: rgba(255,255,255,.8); font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 400; margin-top: 4px; }
+    .dest-featured-cta { text-align: center; margin-top: 28px; }
+    .dest-featured-cta a { display: inline-block; padding: 12px 26px; border: 1px solid #c0392b; color: #c0392b; border-radius: 999px; font-size: .84rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 600; transition: all .2s; }
+    .dest-featured-cta a:hover { background: #c0392b; color: #fff; }
 
     /* Recent Posts */
     .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 32px; }
@@ -139,7 +142,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/about-us-2/">About Us</a></li>
       <li><a href="/blog/">Blog</a></li>
-      <li><a href="#destinations">Destinations</a></li>
+      <li><a href="/countries-we-are-visiting/">Destinations</a></li>
       <li><a href="#travel-map-section">Map</a></li>
     </ul>
   </div>
@@ -152,7 +155,7 @@
   <div class="hero-content">
     <h1>Traveling the World with Children</h1>
     <p>Follow our Danish family of four &mdash; Jesper, Line, Noah &amp; Vitus &mdash; as we explore 20+ countries together, from the Amazon to the Outback.</p>
-    <a href="#destinations" class="hero-btn">Explore Our Adventures</a>
+    <a href="/countries-we-are-visiting/" class="hero-btn">Explore Destinations</a>
   </div>
 </section>
 
@@ -175,8 +178,8 @@
 <!-- Featured Destinations -->
 <div class="section-dark" id="destinations">
   <div class="section">
-    <h2 class="section-title">Where We Have Been</h2>
-    <p class="section-subtitle">Click a destination to read our stories, tips and travel guides from that part of the world.</p>
+    <h2 class="section-title">Featured Destinations</h2>
+    <p class="section-subtitle">A quick snapshot from our travels. For the complete destination archive, open the Destinations tab in the menu.</p>
     <div class="dest-grid">
       <a href="/peru/" class="dest-card">
         <img src="/wp-content/uploads/P1020357.jpg" alt="Peru" loading="lazy">
@@ -226,6 +229,9 @@
         <img src="/wp-content/uploads/2015/12/P1060173.jpg" alt="Thailand" loading="lazy">
         <div class="dest-card-overlay"><div><h3>Thailand</h3><span>October/November 2015</span></div></div>
       </a>
+    </div>
+    <div class="dest-featured-cta">
+      <a href="/countries-we-are-visiting/">View All Destinations &rarr;</a>
     </div>
   </div>
 </div>
