@@ -26,24 +26,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git ls-remote --exit-code --heads origin hostinger-deploy > /dev/null; then
-            git fetch origin hostinger-deploy:hostinger-deploy
-            git worktree add /tmp/hostinger-deploy hostinger-deploy
-          else
-            git worktree add -b hostinger-deploy /tmp/hostinger-deploy
-          fi
-
-          rsync -a --delete --exclude '.git/' option-b-static/site/ /tmp/hostinger-deploy/
+          rm -rf /tmp/hostinger-deploy
+          git worktree add --detach /tmp/hostinger-deploy
 
           cd /tmp/hostinger-deploy
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git add -A
-            git commit -m "Deploy ${GITHUB_SHA}"
-            git push origin hostinger-deploy
-            echo "Updated hostinger-deploy branch"
-          else
-            echo "No deploy changes"
-          fi
+          git checkout --orphan hostinger-deploy
+          git rm -rf . >/dev/null 2>&1 || true
+
+          rsync -a --delete --exclude '.git/' "$GITHUB_WORKSPACE/option-b-static/site/" ./
+
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA}"
+          git push --force origin hostinger-deploy
+          echo "Updated hostinger-deploy branch"
 
       - name: Deployment routing note
         run: |
