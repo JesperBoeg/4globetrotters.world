@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4Globetrotters - Traveling the World with Children</title>
+  <meta name="description" content="A Danish family of four traveling the world. Follow Jesper, Line, Noah and Vitus on their adventures across 20+ countries.">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
+  <style>
+    /* Reset and Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #333; line-height: 1.7; background: #fff; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; display: block; }
+    h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; line-height: 1.25; }
+
+    /* Navigation */
+    .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.97); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0,0,0,.06); transition: box-shadow .3s; }
+    .site-nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: .88rem; font-weight: 500; color: #555; letter-spacing: .3px; transition: color .2s; text-transform: uppercase; }
+    .nav-links a:hover { color: #c0392b; }
+    .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; }
+
+    /* Hero Section */
+    .hero { position: relative; height: 92vh; min-height: 500px; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; margin-top: 64px; }
+    .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center 30%; transition: transform 8s ease-out; }
+    .hero:hover .hero-bg { transform: scale(1.03); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.15) 0%, rgba(0,0,0,.55) 100%); }
+    .hero-content { position: relative; z-index: 2; color: #fff; padding: 0 24px; max-width: 800px; }
+    .hero-content h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); margin-bottom: 16px; text-shadow: 0 2px 30px rgba(0,0,0,.4); }
+    .hero-content p { font-size: clamp(1rem, 2vw, 1.25rem); font-weight: 300; opacity: .92; max-width: 600px; margin: 0 auto 28px; text-shadow: 0 1px 8px rgba(0,0,0,.3); }
+    .hero-btn { display: inline-block; padding: 14px 36px; border: 2px solid #fff; color: #fff; font-size: .9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 50px; transition: all .3s; }
+    .hero-btn:hover { background: #fff; color: #1a1a1a; }
+
+    /* Section Commons */
+    .section { padding: 80px 24px; max-width: 1200px; margin: 0 auto; }
+    .section-title { text-align: center; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: 12px; color: #1a1a1a; }
+    .section-subtitle { text-align: center; font-size: 1.05rem; color: #777; font-weight: 300; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .section-dark { background: #fafafa; }
+
+    /* About / Intro */
+    .intro { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .intro-text h2 { font-size: 2rem; margin-bottom: 18px; }
+    .intro-text p { margin-bottom: 14px; color: #555; }
+    .intro-text .cta-link { display: inline-block; margin-top: 8px; color: #c0392b; font-weight: 600; border-bottom: 2px solid #c0392b; padding-bottom: 2px; transition: opacity .2s; }
+    .intro-text .cta-link:hover { opacity: .7; }
+    .intro-img { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; }
+    .intro-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Destination Grid */
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .dest-card { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 3/2; cursor: pointer; }
+    .dest-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .dest-card:hover img { transform: scale(1.08); }
+    .dest-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 60%); display: flex; align-items: flex-end; padding: 20px; }
+    .dest-card-overlay h3 { color: #fff; font-size: 1.15rem; text-shadow: 0 1px 6px rgba(0,0,0,.4); }
+    .dest-card-overlay span { display: block; color: rgba(255,255,255,.8); font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 400; margin-top: 4px; }
+
+    /* Recent Posts */
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 32px; }
+    .post-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.06); transition: transform .3s, box-shadow .3s; }
+    .post-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+    .post-card-img { aspect-ratio: 16/9; overflow: hidden; }
+    .post-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .post-card:hover .post-card-img img { transform: scale(1.05); }
+    .post-card-body { padding: 24px; }
+    .post-card-body .meta { font-size: .8rem; color: #999; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .post-card-body h3 { font-size: 1.15rem; margin-bottom: 10px; line-height: 1.4; }
+    .post-card-body h3 a { transition: color .2s; }
+    .post-card-body h3 a:hover { color: #c0392b; }
+    .post-card-body p { font-size: .92rem; color: #666; line-height: 1.6; }
+    .post-card-body .read-more { display: inline-block; margin-top: 12px; color: #c0392b; font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; }
+    .post-card-img { position: relative; }
+    .post-card-tag { position: absolute; top: 14px; left: 14px; z-index: 2; background: rgba(192,57,43,.9); color: #fff; font-size: .72rem; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; padding: 5px 12px; border-radius: 4px; font-family: 'Inter', sans-serif; }
+
+    /* Map Section */
+    .map-section { background: #1a1a1a; padding: 80px 24px; }
+    .map-section .section-title { color: #fff; }
+    .map-section .section-subtitle { color: #aaa; }
+    .map-wrap { max-width: 1200px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 40px rgba(0,0,0,.4); }
+    #travel-map { height: 520px; width: 100%; }
+    .map-legend { max-width: 1200px; margin: 20px auto 0; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .map-legend a { display: inline-block; padding: 6px 16px; background: rgba(255,255,255,.08); color: #ccc; font-size: .8rem; border-radius: 20px; transition: all .2s; border: 1px solid rgba(255,255,255,.1); }
+    .map-legend a:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+
+    /* Footer */
+    .site-footer { background: #111; color: #aaa; padding: 48px 24px 32px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    .footer-col h4 { color: #fff; font-size: 1rem; margin-bottom: 16px; }
+    .footer-col p, .footer-col a { font-size: .88rem; color: #888; line-height: 1.8; }
+    .footer-col a:hover { color: #fff; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 6px; }
+    .footer-bottom { max-width: 1200px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid #222; text-align: center; font-size: .82rem; color: #555; }
+    .social-links { display: flex; gap: 16px; margin-top: 8px; }
+    .social-links a { color: #888; font-size: 1.1rem; transition: color .2s; }
+    .social-links a:hover { color: #fff; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .intro { grid-template-columns: 1fr; }
+      .intro-img { order: -1; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #fff; padding: 24px; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: block; }
+      .hero { height: 75vh; }
+      .section { padding: 56px 20px; }
+      .posts-grid { grid-template-columns: 1fr; }
+      #travel-map { height: 380px; }
+    }
+
+    /* Leaflet popup override */
+    .leaflet-popup-content-wrapper { border-radius: 10px; font-family: 'Inter', sans-serif; }
+    .leaflet-popup-content { margin: 12px 16px; font-size: .9rem; line-height: 1.5; }
+    .leaflet-popup-content a { color: #c0392b; font-weight: 600; }
+    .map-popup-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .map-tooltip { font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; }
+    .leaflet-container { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">4Globetrotters</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">&#9776;</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about-us-2/">About Us</a></li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="#destinations">Destinations</a></li>
+      <li><a href="#travel-map-section">Map</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg" style="background-image: url('/wp-content/uploads/2022/05/P1190935.jpg');"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Traveling the World with Children</h1>
+    <p>Follow our Danish family of four &mdash; Jesper, Line, Noah &amp; Vitus &mdash; as we explore 20+ countries together, from the Amazon to the Outback.</p>
+    <a href="#destinations" class="hero-btn">Explore Our Adventures</a>
+  </div>
+</section>
+
+<!-- About / Intro -->
+<div class="section">
+  <div class="intro">
+    <div class="intro-text">
+      <h2>Hey, We are the 4Globetrotters!</h2>
+      <p>We are a family of four from Denmark who believe that the best education happens outside the classroom. In 2015 we took the big step and planned a 6.5-month trip around the world &mdash; and we never stopped.</p>
+      <p>From snorkeling with sea lions in the Galapagos to trekking the Salkantay trail in Peru, from camping in the Australian Outback to exploring temples in Thailand &mdash; every trip is a new chapter in our family story.</p>
+      <p>This blog documents it all: the beautiful, the chaotic, and everything in between. Come along!</p>
+      <a href="/about-us-2/" class="cta-link">Read our full story &rarr;</a>
+    </div>
+    <div class="intro-img">
+      <img src="/wp-content/uploads/2024/07/P1020011.jpg" alt="The family hiking in Peru" loading="lazy">
+    </div>
+  </div>
+</div>
+
+<!-- Featured Destinations -->
+<div class="section-dark" id="destinations">
+  <div class="section">
+    <h2 class="section-title">Where We Have Been</h2>
+    <p class="section-subtitle">Click a destination to read our stories, tips and travel guides from that part of the world.</p>
+    <div class="dest-grid">
+      <a href="/peru/" class="dest-card">
+        <img src="/wp-content/uploads/P1020357.jpg" alt="Peru" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Peru</h3><span>July/August 2024</span></div></div>
+      </a>
+      <a href="/ecuador-july-2024/" class="dest-card">
+        <img src="/wp-content/uploads/2024/07/P1000904.jpg" alt="Ecuador" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Ecuador</h3><span>July 2024</span></div></div>
+      </a>
+      <a href="/galapagos-june-2024/" class="dest-card">
+        <img src="/wp-content/uploads/2024/07/P1000516.jpg" alt="Galapagos" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Galapagos</h3><span>June 2024</span></div></div>
+      </a>
+      <a href="/western-australia-julyaugust-2022/" class="dest-card">
+        <img src="/wp-content/uploads/2022/09/20220824_152013.jpg" alt="Western Australia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Western Australia</h3><span>July/August 2022</span></div></div>
+      </a>
+      <a href="/fiji-2022/" class="dest-card">
+        <img src="/wp-content/uploads/2022/07/P1220668.jpg" alt="Fiji" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Fiji</h3><span>July 2022</span></div></div>
+      </a>
+      <a href="/french-polynesia/" class="dest-card">
+        <img src="/wp-content/uploads/2022/07/P1220014-1.jpg" alt="French Polynesia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>French Polynesia</h3><span>May/June 2022</span></div></div>
+      </a>
+      <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/" class="dest-card">
+        <img src="/wp-content/uploads/2019/07/P1190053.jpg" alt="USA National Parks" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>USA National Parks</h3><span>Rockies, Yellowstone, Bryce, Zion &mdash; 2019</span></div></div>
+      </a>
+      <a href="/indonesia-bali-and-nearby-islands/" class="dest-card">
+        <img src="/wp-content/uploads/2017/08/P1160343.jpg" alt="Indonesia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Indonesia &mdash; Bali</h3><span>July/August 2017</span></div></div>
+      </a>
+      <a href="/australia/" class="dest-card">
+        <img src="/wp-content/uploads/2016/02/P1090412.jpg" alt="Australia" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Australia</h3><span>Adelaide to Sydney &mdash; 2016</span></div></div>
+      </a>
+      <a href="/hawaii/" class="dest-card">
+        <img src="/wp-content/uploads/2016/02/P1100151.jpg" alt="Hawaii" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Hawaii</h3><span>February 2016</span></div></div>
+      </a>
+      <a href="/mexico-yucatan/" class="dest-card">
+        <img src="/wp-content/uploads/2016/04/P1110878.jpg" alt="Mexico Yucatan" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Mexico &mdash; Yucatan</h3><span>February/March 2016</span></div></div>
+      </a>
+      <a href="/thailand/" class="dest-card">
+        <img src="/wp-content/uploads/2015/12/P1060173.jpg" alt="Thailand" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Thailand</h3><span>October/November 2015</span></div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Blog Posts -->
+<div class="section">
+  <h2 class="section-title">Latest Adventures</h2>
+  <p class="section-subtitle">Our most recent stories from the road &mdash; tales of wildlife, culture, family and the unexpected.</p>
+  <div class="posts-grid">
+
+    <article class="post-card">
+      <a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Amazon</span>
+        <img src="/wp-content/uploads/P1020357.jpg" alt="Wildlife in Puerto Maldonado" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">August 8, 2024</p>
+        <h3><a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/">Wildlife Experience Extraordinaire in Puerto Maldonado, Amazonas</a></h3>
+        <p>From Cusco we took the night bus to Puerto Maldonado. Giant otters, macaws, piranhas and a chicken tarantula the size of a lunch plate&hellip;</p>
+        <a href="/wildlife-experience-extraordinaire-in-puerto-maldonado-amazonas/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/amazing-rainbow-mountain-and-red-valley-tour/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Cusco</span>
+        <img src="/wp-content/uploads/P1020080.jpg" alt="Rainbow Mountain Peru" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">August 6, 2024</p>
+        <h3><a href="/amazing-rainbow-mountain-and-red-valley-tour/">Amazing Rainbow Mountain and Red Valley Tour</a></h3>
+        <p>Noah and Jesper went on the Rainbow Mountain tour while Line and Vitus spent a quiet day in Cusco. Priced at 70 soles including meals&hellip;</p>
+        <a href="/amazing-rainbow-mountain-and-red-valley-tour/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/70-km-salkantay-5d-4n-trek/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Salkantay</span>
+        <img src="/wp-content/uploads/2024/07/P1020011.jpg" alt="Salkantay Trek" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 28, 2024</p>
+        <h3><a href="/70-km-salkantay-5d-4n-trek/">70 km Salkantay 5D/4N Trek</a></h3>
+        <p>We booked the Salkantay trek with pickup at 4.15am. At 550 USD per person it was considerably more than usual &mdash; but was it worth it?</p>
+        <a href="/70-km-salkantay-5d-4n-trek/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/homestay-on-the-titicaca-lake/" class="post-card-img">
+        <span class="post-card-tag">Peru &mdash; Titicaca</span>
+        <img src="/wp-content/uploads/2024/07/P1010269.jpg" alt="Titicaca Lake Homestay" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 28, 2024</p>
+        <h3><a href="/homestay-on-the-titicaca-lake/">Homestay on the Titicaca Lake</a></h3>
+        <p>We stopped by Puno to see the beautiful Titicaca Lake and get a touch of local culture at a 2D/1N homestay on one of the small islands&hellip;</p>
+        <a href="/homestay-on-the-titicaca-lake/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/immersed-in-nature-at-san-cristobal/" class="post-card-img">
+        <span class="post-card-tag">Galapagos</span>
+        <img src="/wp-content/uploads/P1020431.jpg" alt="San Cristobal Galapagos" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">June 20, 2024</p>
+        <h3><a href="/immersed-in-nature-at-san-cristobal/">Immersed in Nature at San Cristobal</a></h3>
+        <p>Arriving in San Cristobal around noon, we immediately felt the unique charm of the Galapagos. A warm welcome from the wildlife&hellip;</p>
+        <a href="/immersed-in-nature-at-san-cristobal/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/" class="post-card-img">
+        <span class="post-card-tag">Ecuador</span>
+        <img src="/wp-content/uploads/2015/11/P1050668.jpg" alt="Banos Ecuador Adventures" loading="lazy">
+      </a>
+      <div class="post-card-body">
+        <p class="meta">July 12, 2024</p>
+        <h3><a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/">Adventures in Banos Agua Santa, Ecuador</a></h3>
+        <p>Back on the Ecuadorian mainland after Galapagos it was time for the adventure capital &mdash; kayaking, rafting, canyoning and horseback riding&hellip;</p>
+        <a href="/kayaking-rafting-canyoning-ziplines-hiking-and-horseback-riding-in-banos-agua-santa/" class="read-more">Read more &rarr;</a>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- Interactive Map -->
+<section class="map-section" id="travel-map-section">
+  <h2 class="section-title">Where Would You Like to Go?</h2>
+  <p class="section-subtitle">Click a pin on the map to explore our stories from that destination.</p>
+  <div class="map-wrap">
+    <div id="travel-map"></div>
+  </div>
+  <div class="map-legend">
+    <a href="/peru/">Peru</a>
+    <a href="/ecuador-july-2024/">Ecuador</a>
+    <a href="/galapagos-june-2024/">Galapagos</a>
+    <a href="/western-australia-julyaugust-2022/">W. Australia</a>
+    <a href="/fiji-2022/">Fiji</a>
+    <a href="/french-polynesia/">Fr. Polynesia</a>
+    <a href="/san-francisco-2022/">San Francisco</a>
+    <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/">USA Parks</a>
+    <a href="/indonesia-bali-and-nearby-islands/">Bali</a>
+    <a href="/australia-cairns/">Queensland</a>
+    <a href="/australia-northern-territory/">Northern Territory</a>
+    <a href="/australia/">S. Australia</a>
+    <a href="/deep-south/">Deep South USA</a>
+    <a href="/cuba/">Cuba</a>
+    <a href="/mexico-yucatan/">Mexico</a>
+    <a href="/california-usa/">California</a>
+    <a href="/hawaii/">Hawaii</a>
+    <a href="/philippines/">Philippines</a>
+    <a href="/vietnam/">Vietnam</a>
+    <a href="/thailand/">Thailand</a>
+    <a href="/cyprus/">Cyprus</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>4Globetrotters</h4>
+      <p>A Danish family of four &mdash; Jesper, Line, Noah and Vitus &mdash; sharing our adventures traveling the world with children since 2015.</p>
+      <div class="social-links" style="margin-top:16px;">
+        <a href="https://www.facebook.com/linemarie.nathan" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+        <a href="https://www.linkedin.com/pub/jesper-boeg/1/401/332" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+        <a href="https://twitter.com/j_boeg" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/about-us-2/">About Us</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/countries-we-are-visiting/">All Countries</a></li>
+        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>4Globetrotters<br>Michael Anchers Vej 25<br>8270 Hojbjerg, Denmark</p>
+      <p style="margin-top:8px;">Phone: +45 51 54 28 20</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2015-2026 4Globetrotters. All rights reserved.
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){ links.classList.toggle('open'); });
+
+  var nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  var map = L.map('travel-map', {
+    center: [10, 20],
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 8,
+    scrollWheelZoom: false,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  var pinIcon = L.divIcon({
+    className: 'custom-pin',
+    html: '<svg width="28" height="36" viewBox="0 0 28 36" fill="none"><ellipse cx="14" cy="33" rx="6" ry="3" fill="rgba(0,0,0,.2)"/><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="#c0392b"/><circle cx="14" cy="13" r="5.5" fill="#fff"/></svg>',
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+    popupAnchor: [0, -34]
+  });
+
+  var destinations = [
+    { lat: -13.16, lng: -72.55, title: 'Peru', time: 'July/August 2024', url: '/peru/' },
+    { lat: -1.83, lng: -78.18, title: 'Ecuador', time: 'July 2024', url: '/ecuador-july-2024/' },
+    { lat: -0.95, lng: -90.97, title: 'Galapagos', time: 'June 2024', url: '/galapagos-june-2024/' },
+    { lat: -23.70, lng: 121.63, title: 'Western Australia', time: 'July/August 2022', url: '/western-australia-julyaugust-2022/' },
+    { lat: -17.71, lng: 178.07, title: 'Fiji', time: 'July 2022', url: '/fiji-2022/' },
+    { lat: -17.68, lng: -149.41, title: 'French Polynesia', time: 'May/June 2022', url: '/french-polynesia/' },
+    { lat: 37.77, lng: -122.42, title: 'San Francisco', time: 'May 2022', url: '/san-francisco-2022/' },
+    { lat: 44.43, lng: -110.59, title: 'Yellowstone and Rockies', time: 'July/August 2019', url: '/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/' },
+    { lat: -8.34, lng: 115.09, title: 'Indonesia - Bali', time: 'July/August 2017', url: '/indonesia-bali-and-nearby-islands/' },
+    { lat: -16.92, lng: 145.78, title: 'Queensland', time: 'July 2017', url: '/australia-cairns/' },
+    { lat: -12.46, lng: 130.85, title: 'Northern Territory', time: 'June/July 2017', url: '/australia-northern-territory/' },
+    { lat: -34.93, lng: 138.60, title: 'Australia - Adelaide to Sydney', time: 'Jan/Feb 2016', url: '/australia/' },
+    { lat: 20.80, lng: -156.33, title: 'Hawaii', time: 'February 2016', url: '/hawaii/' },
+    { lat: 34.05, lng: -118.24, title: 'California', time: 'February 2016', url: '/california-usa/' },
+    { lat: 20.65, lng: -87.47, title: 'Mexico - Yucatan', time: 'Feb/March 2016', url: '/mexico-yucatan/' },
+    { lat: 21.52, lng: -77.78, title: 'Cuba', time: 'March/April 2016', url: '/cuba/' },
+    { lat: 30.33, lng: -89.32, title: 'Deep South USA', time: 'April 2016', url: '/deep-south/' },
+    { lat: 12.88, lng: 121.77, title: 'Philippines', time: 'Dec 2015/Jan 2016', url: '/philippines/' },
+    { lat: 14.06, lng: 108.28, title: 'Vietnam', time: 'Nov/Dec 2015', url: '/vietnam/' },
+    { lat: 15.87, lng: 100.99, title: 'Thailand', time: 'Oct/Nov 2015', url: '/thailand/' },
+    { lat: 35.13, lng: 33.43, title: 'Cyprus', time: 'October 2015', url: '/cyprus/' },
+    { lat: 56.26, lng: 9.50, title: 'Denmark (Home)', time: 'Home base', url: '/denmark-preparing-for-the-trip/' }
+  ];
+
+  destinations.forEach(function(d) {
+    var marker = L.marker([d.lat, d.lng], { icon: pinIcon }).addTo(map);
+    marker.bindTooltip(d.title, { direction: 'top', offset: [0, -36], className: 'map-tooltip' });
+    marker.on('click', function(){ window.location.href = d.url; });
+  });
+
+  map.on('click', function(){ map.scrollWheelZoom.enable(); });
+})();
+</script>
+</body>
+</html>
