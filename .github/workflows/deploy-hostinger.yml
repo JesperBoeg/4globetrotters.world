@@ -28,11 +28,16 @@ jobs:
           set ftp:ssl-protect-data true
           set ftp:passive-mode true
           set ssl:verify-certificate false
+          set cmd:fail-exit true
           set net:timeout 60
           set net:max-retries 5
           set net:reconnect-interval-base 5
           set net:reconnect-interval-max 30
           set xfer:clobber on
+
+          # Debug: print remote cwd and top-level listing for path verification.
+          pwd
+          cls -la
 
           # Many Hostinger FTP users are chrooted already; deploy to FTP root.
           mirror -R \
