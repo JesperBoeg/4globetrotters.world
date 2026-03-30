@@ -17,9 +17,13 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          # Handle both real newlines and literal \n in secrets
+          printf '%s' "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          # Validate key was written with correct PEM structure
+          head -1 ~/.ssh/id_rsa
           ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_FTP_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          echo "known_hosts populated: $(wc -l < ~/.ssh/known_hosts) entries"
 
       - name: Deploy via rsync over SSH
         run: |
