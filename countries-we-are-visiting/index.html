@@ -3,10 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Countries we are visiting | 4Globetrotters</title>
+  <title>Destinations We Have Visited | 4Globetrotters</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/subpage.css">
+  <style>
+    .dest-hero { background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.55)), url('/wp-content/uploads/P1020357.jpg') center/cover no-repeat; padding: 120px 24px 80px; margin-top: 64px; text-align: center; }
+    .dest-hero h1 { color: #fff; font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 auto 16px; max-width: 800px; line-height: 1.2; }
+    .dest-hero p { color: rgba(255,255,255,.88); font-family: 'Inter', sans-serif; font-size: clamp(.95rem, 2vw, 1.15rem); max-width: 640px; margin: 0 auto; line-height: 1.7; }
+    .dest-intro { max-width: 720px; margin: 40px auto 8px; text-align: center; }
+    .dest-intro p { font-size: 1.05rem; color: #555; line-height: 1.8; }
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; margin-top: 36px; }
+    .dest-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.07); transition: transform .3s, box-shadow .3s; }
+    .dest-card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(0,0,0,.12); }
+    .dest-card a.dest-card-img { display: block; aspect-ratio: 4/3; overflow: hidden; }
+    .dest-card a.dest-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .dest-card:hover .dest-card-img img { transform: scale(1.06); }
+    .dest-card-body { padding: 18px 22px 22px; }
+    .dest-card-body .dest-region { font-size: .72rem; text-transform: uppercase; letter-spacing: .6px; color: #c0392b; font-family: 'Inter', sans-serif; font-weight: 600; margin-bottom: 6px; }
+    .dest-card-body h2 { font-size: 1.15rem; line-height: 1.35; margin: 0 0 8px; }
+    .dest-card-body h2 a { color: #1a1a1a; transition: color .2s; }
+    .dest-card-body h2 a:hover { color: #c0392b; }
+    .dest-card-body .dest-when { font-size: .8rem; color: #999; font-family: 'Inter', sans-serif; margin-bottom: 10px; }
+    .dest-card-body p { font-size: .88rem; color: #666; line-height: 1.65; margin-bottom: 12px; }
+    .dest-card-body .read-more { color: #c0392b; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; }
+    @media (max-width: 600px) { .dest-grid { grid-template-columns: 1fr; } .dest-hero { padding: 90px 20px 60px; } }
+  </style>
 </head>
 <body>
 
@@ -23,40 +45,266 @@
   </div>
 </nav>
 
-<div class="page-hero">
-    <h1>Countries we are visiting</h1>
+<div class="dest-hero">
+  <h1>Places We Have Called Home &mdash; For a While</h1>
+  <p>Since 2015, our family of four has been chasing sunsets, coral reefs, mountain trails and street food stalls across five continents. Here are the destinations that have left their mark on us.</p>
 </div>
 
 <div class="breadcrumb-bar">
-  <div class="breadcrumb-inner"><a href="/">Home</a> &rsaquo; Countries we are visiting</div>
+  <div class="breadcrumb-inner"><a href="/">Home</a> &rsaquo; Destinations</div>
 </div>
 
 <main class="page-content">
-<p>Pick a destination to see trip pages and stories.</p>
-<ul class="dest-list-grid">
-<li><a href='/peru/'>Peru (July/August 2024)</a></li>
-<li><a href='/ecuador-july-2024/'>Ecuador (July 2024)</a></li>
-<li><a href='/galapagos-june-2024/'>Galapagos - June 2024</a></li>
-<li><a href='/western-australia-julyaugust-2022/'>Western Australia (July/August 2022)</a></li>
-<li><a href='/fiji-2022/'>Fiji (July 2022)</a></li>
-<li><a href='/french-polynesia/'>French Polynesia (May/June 2022)</a></li>
-<li><a href='/san-francisco-2022/'>San Francisco (May 2022)</a></li>
-<li><a href='/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/'>USA - Rockies, Yellowstone, Grand Teton, Bryce, Zion (July/August 2019)</a></li>
-<li><a href='/indonesia-bali-and-nearby-islands/'>Indonesia - Bali and nearby islands (July/Aug. 2017)</a></li>
-<li><a href='/australia-cairns/'>Australia - Queensland (July 2-20. 2017)</a></li>
-<li><a href='/australia-northern-territory/'>Australia - Northern Territory (June/July 2017)</a></li>
-<li><a href='/deep-south/'>Deep South USA</a></li>
-<li><a href='/cuba/'>Cuba</a></li>
-<li><a href='/mexico-yucatan/'>Mexico - Yucatan</a></li>
-<li><a href='/california-usa/'>California - USA</a></li>
-<li><a href='/hawaii/'>Hawaii</a></li>
-<li><a href='/australia/'>Australia - Adelaide to Sydney (January/February 2016)</a></li>
-<li><a href='/philippines/'>Philippines</a></li>
-<li><a href='/vietnam/'>Vietnam</a></li>
-<li><a href='/thailand/'>Thailand</a></li>
-<li><a href='/cyprus/'>Cyprus</a></li>
-<li><a href='/denmark-preparing-for-the-trip/'>Denmark (Preparing for the round-the-world trip)</a></li>
-</ul>
+
+<div class="dest-intro">
+  <p>From the wild Amazon jungle to the turquoise lagoons of French Polynesia, from ancient Inca trails to the red deserts of Western Australia &mdash; every destination has been an adventure and an education. Click any destination below to read our stories.</p>
+</div>
+
+<div class="dest-grid">
+
+<div class="dest-card">
+  <a href="/peru/" class="dest-card-img"><img src="/wp-content/uploads/P1020357.jpg" alt="Peru"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">South America</p>
+    <h2><a href="/peru/">Peru</a></h2>
+    <p class="dest-when">July &ndash; August 2024</p>
+    <p>Amazon wildlife in Puerto Maldonado, a gruelling Salkantay trek, Lake Titicaca, Rainbow Mountain and the ancient streets of Cusco. Peru exceeded every expectation.</p>
+    <a href="/peru/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/ecuador-july-2024/" class="dest-card-img"><img src="/wp-content/uploads/2024/07/P1000904.jpg" alt="Ecuador"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">South America</p>
+    <h2><a href="/ecuador-july-2024/">Ecuador</a></h2>
+    <p class="dest-when">July 2024</p>
+    <p>Adrenaline-packed days in Ba&ntilde;os with canyoning, rafting and zip-lining, followed by altitude hikes through the mist of Cotopaxi National Park.</p>
+    <a href="/ecuador-july-2024/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/galapagos-june-2024/" class="dest-card-img"><img src="/wp-content/uploads/2024/07/P1000516.jpg" alt="Galapagos"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">South America</p>
+    <h2><a href="/galapagos-june-2024/">Gal&aacute;pagos Islands</a></h2>
+    <p class="dest-when">June 2024</p>
+    <p>Swimming with sea lions, snorkelling among hammerhead sharks, and watching giant tortoises roam free. The Gal&aacute;pagos is unlike anywhere else on the planet.</p>
+    <a href="/galapagos-june-2024/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/western-australia-julyaugust-2022/" class="dest-card-img"><img src="/wp-content/uploads/2022/09/20220824_152013.jpg" alt="Western Australia"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/western-australia-julyaugust-2022/">Western Australia</a></h2>
+    <p class="dest-when">July &ndash; August 2022</p>
+    <p>Humpback whales at Quobba, whale sharks at Ningaloo Reef, gorge hikes in Karijini and sea lions in Jurien Bay &mdash; WA delivered on every front.</p>
+    <a href="/western-australia-julyaugust-2022/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/fiji-2022/" class="dest-card-img"><img src="/wp-content/uploads/2022/07/P1220668.jpg" alt="Fiji"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/fiji-2022/">Fiji</a></h2>
+    <p class="dest-when">July 2022</p>
+    <p>A road trip around Viti Levu that took us out of our comfort zone &mdash; a village homestay, volcanic mud pools, coral reefs and an unforgettable day trip to Tivua Island.</p>
+    <a href="/fiji-2022/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/french-polynesia/" class="dest-card-img"><img src="/wp-content/uploads/2022/07/P1220014-1.jpg" alt="French Polynesia"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/french-polynesia/">French Polynesia</a></h2>
+    <p class="dest-when">May &ndash; July 2022</p>
+    <p>Six islands in six weeks: Tahiti, Moorea, Huahine, Raiatea, Maupiti and finally Bora Bora. Lagoons so clear and colourful they barely looked real.</p>
+    <a href="/french-polynesia/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/san-francisco-2022/" class="dest-card-img"><img src="/wp-content/uploads/2022/05/P1190935.jpg" alt="San Francisco"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">North America</p>
+    <h2><a href="/san-francisco-2022/">San Francisco</a></h2>
+    <p class="dest-when">May 2022</p>
+    <p>Alcatraz by night, the redwoods of Muir Woods, the Marin Headlands and the Golden Gate Bridge &mdash; a classic city break with the family.</p>
+    <a href="/san-francisco-2022/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/" class="dest-card-img"><img src="/wp-content/uploads/2019/07/P1190053.jpg" alt="USA National Parks"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">North America</p>
+    <h2><a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/">USA &mdash; Rocky Mountains &amp; National Parks</a></h2>
+    <p class="dest-when">July &ndash; August 2019</p>
+    <p>Denver to Las Vegas via Rocky Mountain, Yellowstone, Grand Teton, Bryce and Zion. Geysers, bears, slot canyons and some of the most dramatic scenery on Earth.</p>
+    <a href="/usa-denver-to-las-vegas-rockies-yellowstone-bryce-zion/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/indonesia-bali-and-nearby-islands/" class="dest-card-img"><img src="/wp-content/uploads/2017/08/P1160343.jpg" alt="Indonesia - Bali"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/indonesia-bali-and-nearby-islands/">Indonesia &mdash; Bali &amp; Islands</a></h2>
+    <p class="dest-when">July &ndash; August 2017</p>
+    <p>Manta rays at Nusa Penida, monkey forests and temple ceremonies in Ubud, and lazy snorkelling days on the Gili Islands. Bali found its way into our hearts.</p>
+    <a href="/indonesia-bali-and-nearby-islands/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/australia-cairns/" class="dest-card-img"><img src="/wp-content/uploads/2017/07/img_597deaf857851.png" alt="Australia - Queensland"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/australia-cairns/">Australia &mdash; Queensland</a></h2>
+    <p class="dest-when">July 2017</p>
+    <p>Snorkelling the Great Barrier Reef, spotting endangered cassowaries in the rainforest, and celebrating Noah&rsquo;s birthday the true Aussie way.</p>
+    <a href="/australia-cairns/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/australia-northern-territory/" class="dest-card-img"><img src="/wp-content/uploads/2017/07/img_595e2a4b3a943.png" alt="Australia - Northern Territory"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/australia-northern-territory/">Australia &mdash; Northern Territory</a></h2>
+    <p class="dest-when">June &ndash; July 2017</p>
+    <p>Kakadu National Park, Yellow Water cruises, gorge hikes in Litchfield and crocodiles around every bend. The Top End is wild in all the right ways.</p>
+    <a href="/australia-northern-territory/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/deep-south/" class="dest-card-img"><img src="/wp-content/uploads/2016/04/P1120629.jpg" alt="Deep South USA"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">North America</p>
+    <h2><a href="/deep-south/">Deep South USA</a></h2>
+    <p class="dest-when">April &ndash; May 2016</p>
+    <p>A camping road trip through Florida and the Deep South &mdash; crawfish festivals, the USS Alabama, alligators in Louisiana and way too much BBQ.</p>
+    <a href="/deep-south/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/cuba/" class="dest-card-img"><img src="/wp-content/uploads/2016/04/P1120431.jpg" alt="Cuba"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Caribbean</p>
+    <h2><a href="/cuba/">Cuba</a></h2>
+    <p class="dest-when">April 2016</p>
+    <p>Havana&rsquo;s crumbling grandeur, tobacco valleys in Vi&ntilde;ales and a farewell that was pure Cuba. Beautiful, difficult, unforgettable &mdash; we wouldn&rsquo;t change a thing.</p>
+    <a href="/cuba/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/mexico-yucatan/" class="dest-card-img"><img src="/wp-content/uploads/2016/04/P1110878.jpg" alt="Mexico - Yucatan"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Central America</p>
+    <h2><a href="/mexico-yucatan/">Mexico &mdash; Yucat&aacute;n</a></h2>
+    <p class="dest-when">March &ndash; April 2016</p>
+    <p>Cenotes, Chich&eacute;n Itz&aacute;, sea turtles at Akumal, Mayan ruins at Cobá and some of the best reef snorkelling of the entire trip. Mexico, we love you.</p>
+    <a href="/mexico-yucatan/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/california-usa/" class="dest-card-img"><img src="/wp-content/uploads/2016/02/P1100395.jpg" alt="California"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">North America</p>
+    <h2><a href="/california-usa/">California</a></h2>
+    <p class="dest-when">February 2016</p>
+    <p>Los Angeles with children &mdash; Knott&rsquo;s Berry Farm, the buzz of LA and a slight relief to be heading onward to Mexico. California does big everything.</p>
+    <a href="/california-usa/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/hawaii/" class="dest-card-img"><img src="/wp-content/uploads/2016/02/P1100151.jpg" alt="Hawaii"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">North America</p>
+    <h2><a href="/hawaii/">Hawaii</a></h2>
+    <p class="dest-when">February 2016</p>
+    <p>Humpback whales off Maui, hiking into the Haleakal&#257; crater, Line&rsquo;s first swim with sea turtles and the Road to Hana. Hawaii is as magical as it sounds.</p>
+    <a href="/hawaii/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/australia/" class="dest-card-img"><img src="/wp-content/uploads/2016/02/P1090412.jpg" alt="Australia - Adelaide to Sydney"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Oceania</p>
+    <h2><a href="/australia/">Australia &mdash; Adelaide to Sydney</a></h2>
+    <p class="dest-when">January &ndash; February 2016</p>
+    <p>A month in a Toyota HiAce campervan along the east coast &mdash; Great Ocean Road, Jervis Bay dolphins, Depot Beach campfires and two very road-weary kids.</p>
+    <a href="/australia/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/philippines/" class="dest-card-img"><img src="/wp-content/uploads/2016/01/P1070962.jpg" alt="Philippines"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/philippines/">Philippines</a></h2>
+    <p class="dest-when">December 2015 &ndash; January 2016</p>
+    <p>El Nido&rsquo;s dramatic karst scenery, Honda Bay island-hopping, the Underground River and a Christmas with family at Puerto Galera. The Philippines stole our hearts.</p>
+    <a href="/philippines/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/vietnam/" class="dest-card-img"><img src="/wp-content/uploads/2015/12/P1070102-1.jpg" alt="Vietnam"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/vietnam/">Vietnam</a></h2>
+    <p class="dest-when">December 2015</p>
+    <p>Saigon street food tours, kite surfing in Mui Ne, a boat trip through the Mekong Delta. Vietnam is loud, delicious and endlessly fascinating.</p>
+    <a href="/vietnam/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/thailand/" class="dest-card-img"><img src="/wp-content/uploads/2015/12/P1060173.jpg" alt="Thailand"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/thailand/">Thailand</a></h2>
+    <p class="dest-when">November &ndash; December 2015</p>
+    <p>Jungle trekking near Kanchanaburi, zip-lining in Chiang Mai with a 5-year-old and long golden days on Koh Lanta. Thailand was the perfect start to the trip.</p>
+    <a href="/thailand/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/cyprus/" class="dest-card-img"><img src="/wp-content/uploads/2015/10/P1040880.jpg" alt="Cyprus"></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Europe</p>
+    <h2><a href="/cyprus/">Cyprus</a></h2>
+    <p class="dest-when">October 2015</p>
+    <p>Our very first stop &mdash; beaches, ancient ruins, waterparks and snorkelling in crystal-clear Mediterranean waters. The perfect warm-up for the adventure ahead.</p>
+    <a href="/cyprus/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/denmark-preparing-for-the-trip/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Where it all began</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Europe</p>
+    <h2><a href="/denmark-preparing-for-the-trip/">Denmark &mdash; Preparing for the Trip</a></h2>
+    <p class="dest-when">2015</p>
+    <p>Before we could see the world, we had to leave Denmark. How do you prepare four people for an open-ended round-the-world trip? Lots of lists, some panic, and a one-way ticket.</p>
+    <a href="/denmark-preparing-for-the-trip/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+</div>
 </main>
 
 <footer class="site-footer">
