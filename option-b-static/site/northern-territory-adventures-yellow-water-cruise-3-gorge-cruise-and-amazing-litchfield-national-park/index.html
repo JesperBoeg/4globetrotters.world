@@ -101,6 +101,7 @@
   var remark_config = {
     host: "https://4globetrotters-comments.fly.dev",
     site_id: "4globetrotters",
+    url: window.location.href.replace(/^https?:\/\/www\./, "https://").split(/[?#]/)[0],
     components: ["embed"],
     max_shown_comments: 10,
     theme: "light",

@@ -48,6 +48,7 @@ EMBED_HTML = f"""
   var remark_config = {{
     host: "{REMARK_URL}",
     site_id: "{SITE_ID}",
+    url: window.location.href.replace(/^https?:\/\/www\./, "https://").split(/[?#]/)[0],
     components: ["embed"],
     max_shown_comments: 10,
     theme: "light",
