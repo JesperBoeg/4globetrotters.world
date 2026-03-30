@@ -27,11 +27,11 @@ jobs:
           set ftp:ssl-force true
           set ftp:ssl-protect-data true
           set ftp:passive-mode true
+          set ftp:fix-pasv-address true
           set ssl:verify-certificate false
-          set ssl:priority "NORMAL:-VERS-TLS1.3"
           set cmd:fail-exit true
           set net:timeout 30
-          set net:max-retries 3
+          set net:max-retries 2
           set net:reconnect-interval-base 5
           set net:reconnect-interval-max 15
           set xfer:clobber on
