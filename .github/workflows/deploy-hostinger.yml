@@ -40,7 +40,13 @@ jobs:
           git push --force origin hostinger-deploy
           echo "Updated hostinger-deploy branch"
 
-      - name: Deployment routing note
+      - name: Notify Hostinger to pull
         run: |
-          echo "Hostinger Git should track branch: hostinger-deploy"
-          echo "Hostinger deploy path should be: public_html/site"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            https://webhooks.hostinger.com/deploy/e5bce21847ba570bf4bd3f1b2df1a6b4)
+          echo "Hostinger webhook response: $STATUS"
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
+            echo "Hostinger pull triggered successfully"
+          else
+            echo "WARNING: Hostinger webhook returned $STATUS"
+          fi
