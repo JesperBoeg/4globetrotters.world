@@ -1,4 +1,4 @@
-name: Publish Hostinger Deploy Branch
+﻿name: Publish Hostinger Deploy Branch
 
 on:
   workflow_dispatch:
@@ -27,27 +27,29 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # Fetch existing hostinger-deploy branch if it exists
+          git fetch origin hostinger-deploy || true
+
           rm -rf /tmp/hostinger-deploy
           git worktree add --detach /tmp/hostinger-deploy
 
           cd /tmp/hostinger-deploy
-          git checkout --orphan hostinger-deploy
-          git rm -rf . >/dev/null 2>&1 || true
+
+          # Build on existing history so Hostinger can git pull (no force-push)
+          if git show-ref --verify --quiet refs/remotes/origin/hostinger-deploy; then
+            git checkout -B hostinger-deploy origin/hostinger-deploy
+          else
+            git checkout --orphan hostinger-deploy
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
 
           rsync -a --delete --exclude '.git' --exclude '.git/' "$GITHUB_WORKSPACE/option-b-static/site/" ./
 
           git add -A
-          git commit -m "Deploy ${GITHUB_SHA}"
-          git push --force origin hostinger-deploy
-          echo "Updated hostinger-deploy branch"
-
-      - name: Notify Hostinger to pull
-        run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            https://webhooks.hostinger.com/deploy/e5bce21847ba570bf4bd3f1b2df1a6b4)
-          echo "Hostinger webhook response: $STATUS"
-          if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
-            echo "Hostinger pull triggered successfully"
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
           else
-            echo "WARNING: Hostinger webhook returned $STATUS"
+            git commit -m "Deploy ${GITHUB_SHA}"
+            git push origin hostinger-deploy
+            echo "Updated hostinger-deploy branch"
           fi
