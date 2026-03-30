@@ -14,39 +14,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
-
-      - name: Deploy via FTPS to public_html
-        env:
-          FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
-          FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
-          FTP_PASS: ${{ secrets.HOSTINGER_FTP_PASS }}
-        run: |
-          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" << 'EOF'
-          set ftp:ssl-force true
-          set ftp:ssl-protect-data false
-          set ftp:passive-mode false
-          set ssl:verify-certificate false
-          set cmd:fail-exit true
-          set net:timeout 30
-          set net:max-retries 3
-          set net:reconnect-interval-base 5
-          set net:reconnect-interval-max 15
-          set xfer:clobber on
-
-          pwd
-          cls -la
-
-          mirror -R \
-            --verbose \
-            --ignore-time \
-            --parallel=2 \
-            --exclude-glob .git* \
-            --exclude-glob .github \
-            --exclude-glob backup \
-            --exclude-glob wp-content/uploads \
-            option-b-static/site public_html/
-
-          quit
-          EOF
+      - name: Deploy via FTPS to Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USER }}
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
+          protocol: ftps
+          port: 21
+          security: loose
+          local-dir: ./option-b-static/site/
+          server-dir: /public_html/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.github*
+            **/backup*
+            **/wp-content/uploads*
