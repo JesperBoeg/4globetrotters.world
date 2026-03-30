@@ -33,7 +33,7 @@ jobs:
           git checkout --orphan hostinger-deploy
           git rm -rf . >/dev/null 2>&1 || true
 
-          rsync -a --delete --exclude '.git/' "$GITHUB_WORKSPACE/option-b-static/site/" ./
+          rsync -a --delete --exclude '.git' --exclude '.git/' "$GITHUB_WORKSPACE/option-b-static/site/" ./
 
           git add -A
           git commit -m "Deploy ${GITHUB_SHA}"
