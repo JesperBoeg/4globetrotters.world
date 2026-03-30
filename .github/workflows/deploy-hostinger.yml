@@ -14,15 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via FTPS to Hostinger
+      - name: Deploy via FTP to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.HOSTINGER_FTP_HOST }}
           username: ${{ secrets.HOSTINGER_FTP_USER }}
           password: ${{ secrets.HOSTINGER_FTP_PASS }}
-          protocol: ftps
+          protocol: ftp
           port: 21
-          security: loose
+          security: plain
           local-dir: ./option-b-static/site/
           server-dir: /public_html/
           dangerous-clean-slate: false
