@@ -1,4 +1,4 @@
-name: Deploy Static Site to Hostinger
+name: Publish Hostinger Deploy Branch
 
 on:
   push:
@@ -10,44 +10,42 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install lftp
-        run: sudo apt-get update -qq && sudo apt-get install -y lftp
-
-      - name: Deploy via FTPS to Hostinger
-        env:
-          FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
-          FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
-          FTP_PASS: ${{ secrets.HOSTINGER_FTP_PASS }}
+      - name: Publish option-b-static/site to hostinger-deploy branch
+        shell: bash
         run: |
-          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" << 'LFTP_EOF'
-          set ftp:ssl-force true
-          set ftp:ssl-protect-data true
-          set ftp:passive-mode true
-          set ftp:fix-pasv-address true
-          set ssl:verify-certificate false
-          set cmd:fail-exit true
-          set net:timeout 30
-          set net:max-retries 2
-          set net:reconnect-interval-base 5
-          set net:reconnect-interval-max 15
-          set xfer:clobber on
+          set -euo pipefail
 
-          pwd
-          cls -la
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          mirror -R \
-            --verbose \
-            --ignore-time \
-            --parallel=2 \
-            --exclude-glob .git* \
-            --exclude-glob .github \
-            --exclude-glob backup \
-            --exclude-glob wp-content/uploads \
-            option-b-static/site public_html/
+          if git ls-remote --exit-code --heads origin hostinger-deploy > /dev/null; then
+            git fetch origin hostinger-deploy:hostinger-deploy
+            git worktree add /tmp/hostinger-deploy hostinger-deploy
+          else
+            git worktree add -b hostinger-deploy /tmp/hostinger-deploy
+          fi
 
-          quit
-          LFTP_EOF
+          rsync -a --delete --exclude '.git/' option-b-static/site/ /tmp/hostinger-deploy/
+
+          cd /tmp/hostinger-deploy
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add -A
+            git commit -m "Deploy ${GITHUB_SHA}"
+            git push origin hostinger-deploy
+            echo "Updated hostinger-deploy branch"
+          else
+            echo "No deploy changes"
+          fi
+
+      - name: Deployment routing note
+        run: |
+          echo "Hostinger Git should track branch: hostinger-deploy"
+          echo "Hostinger deploy path should be: public_html/site"
