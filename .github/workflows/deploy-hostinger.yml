@@ -1,4 +1,4 @@
-name: Publish Hostinger Deploy Branch
+name: Deploy to Hostinger via SSH
 
 on:
   push:
@@ -10,37 +10,31 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Publish option-b-static/site to hostinger-deploy branch
-        shell: bash
+      - name: Set up SSH key
         run: |
-          set -euo pipefail
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_FTP_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          rm -rf /tmp/hostinger-deploy
-          git worktree add --detach /tmp/hostinger-deploy
-
-          cd /tmp/hostinger-deploy
-          git checkout --orphan hostinger-deploy
-          git rm -rf . >/dev/null 2>&1 || true
-
-          rsync -a --delete --exclude '.git' --exclude '.git/' "$GITHUB_WORKSPACE/option-b-static/site/" ./
-
-          git add -A
-          git commit -m "Deploy ${GITHUB_SHA}"
-          git push --force origin hostinger-deploy
-          echo "Updated hostinger-deploy branch"
-
-      - name: Deployment routing note
+      - name: Deploy via rsync over SSH
         run: |
-          echo "Hostinger Git should track branch: hostinger-deploy"
-          echo "Hostinger deploy path should be: public_html/site"
+          rsync -avz --delete \
+            -e "ssh -p 65002 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            option-b-static/site/ \
+            ${{ secrets.HOSTINGER_FTP_USER }}@${{ secrets.HOSTINGER_FTP_HOST }}:/home/${{ secrets.HOSTINGER_FTP_USER }}/public_html/site/
+
+      - name: Verify deploy marker
+        run: |
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.${{ secrets.HOSTINGER_FTP_HOST }}/deploy-marker.txt)
+          echo "deploy-marker.txt HTTP status: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "DEPLOY CONFIRMED: live site is updated"
+          else
+            echo "WARNING: marker not found (status $STATUS) — CDN cache may still be propagating"
+          fi
