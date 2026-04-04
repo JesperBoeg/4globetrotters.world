@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/assets/wp-simple/css/bootstrap.min.css">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/wp-simple/style.css">
+  <link rel="stylesheet" href="/assets/email-widget.css">
   <style>
     body { background:#f4f4f4; }
     .container-card { background:#fff; padding:30px; box-shadow:0 1px 8px rgba(0,0,0,.08); }
@@ -264,6 +265,26 @@
           </ul>
         </div>
         <div class="sidebar-box">
+          <h4>Start Here Guides</h4>
+          <ul>
+            <li><a href='/peru-family-travel-guide/'>Peru Family Travel Guide</a></li>
+            <li><a href='/family-snorkeling-destinations-guide/'>Best Family Snorkeling Guide</a></li>
+            <li><a href='/hiking-with-kids-guide/'>Hiking With Kids Guide</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-box">
+          <h4>Newsletter</h4>
+          <div class="email-signup-widget mobile-optimized" style="padding:20px 14px; margin:0; border-radius:8px;">
+            <h2 style="font-size:1.1rem; margin-bottom:8px;">Get New Stories</h2>
+            <p style="font-size:.9rem; margin-bottom:12px;">Family travel tips and new posts, straight to your inbox.</p>
+            <form class="email-signup-form" data-endpoint="https://formspree.io/f/xdappdaz">
+              <input type="email" placeholder="Your email" required aria-label="Email address" style="min-width:100%;">
+              <button type="submit" style="width:100%;">Subscribe</button>
+            </form>
+            <div class="signup-success">Thanks for subscribing.</div>
+          </div>
+        </div>
+        <div class="sidebar-box">
           <h4>Contact information</h4>
           <p>4globetrotters, Michael Anchers Vej 25. 8270 Hojbjerg. Phone: +45 51 54 28 20</p>
         </div>
@@ -315,5 +336,6 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="/assets/wp-simple/js/bootstrap.min.js"></script>
+<script src="/assets/email-widget.js"></script>
 </body>
 </html>
