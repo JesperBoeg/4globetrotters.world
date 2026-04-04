@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/assets/email-widget.css">
   <style>
     /* Reset and Base */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -323,6 +324,28 @@
   </div>
 </div>
 
+<!-- Start Here Guides -->
+<div class="section-dark">
+  <div class="section">
+    <h2 class="section-title">Start Here: Family Travel Guides</h2>
+    <p class="section-subtitle">If you are new here, begin with our practical hub guides built from years on the road.</p>
+    <div class="dest-grid">
+      <a href="/peru-family-travel-guide/" class="dest-card">
+        <img src="/wp-content/uploads/2024/07/P1020011.jpg" alt="Peru family travel guide" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Peru With Kids</h3><span>Trekking, Cusco, Titicaca</span></div></div>
+      </a>
+      <a href="/family-snorkeling-destinations-guide/" class="dest-card">
+        <img src="/wp-content/uploads/2024/06/P1000146-1.jpg" alt="Family snorkeling guide" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Best Family Snorkeling</h3><span>Galapagos, Hawaii, Thailand</span></div></div>
+      </a>
+      <a href="/hiking-with-kids-guide/" class="dest-card">
+        <img src="/wp-content/uploads/2019/07/P1170565.jpg" alt="Hiking with kids guide" loading="lazy">
+        <div class="dest-card-overlay"><div><h3>Hiking With Kids</h3><span>Easy to advanced family trails</span></div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- Interactive Map -->
 <section class="map-section" id="travel-map-section">
   <h2 class="section-title">Where Would You Like to Go?</h2>
@@ -354,6 +377,19 @@
     <a href="/cyprus/">Cyprus</a>
   </div>
 </section>
+
+<!-- Newsletter -->
+<div class="section">
+  <div class="email-signup-widget mobile-optimized" data-endpoint="https://formspree.io/f/xdappdaz">
+    <h2>Join Our Family Travel Newsletter</h2>
+    <p>Get practical destination tips, family travel lessons, and our newest itineraries directly in your inbox.</p>
+    <form class="email-signup-form" data-endpoint="https://formspree.io/f/xdappdaz">
+      <input type="email" placeholder="Your email address" required aria-label="Email address">
+      <button type="submit">Subscribe</button>
+    </form>
+    <div class="signup-success">Thanks for subscribing. Please check your inbox for confirmation.</div>
+  </div>
+</div>
 
 <!-- Footer -->
 <footer class="site-footer">
@@ -389,6 +425,7 @@
 
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/assets/email-widget.js"></script>
 <script>
 (function(){
   var toggle = document.getElementById('navToggle');

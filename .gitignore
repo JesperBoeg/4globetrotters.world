@@ -8,6 +8,10 @@ backup/
 comparison-top*.csv
 download-script*.txt
 download-log*.txt
+tmp-*.png
+archive-test.html
+**/__pycache__/
+*.pyc
 
 # Keep generated static output, but exclude massive media from GitHub
 option-b-static/site/wp-content/uploads/

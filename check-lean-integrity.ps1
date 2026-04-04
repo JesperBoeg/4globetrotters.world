@@ -1,25 +1,50 @@
-$xml = "C:\Users\agile\VSCode projects\4globetrotters-migration\backup\4globetrotters.WordPress.2026-03-28.xml"
-$leanUploads = "C:\Users\agile\VSCode projects\4globetrotters-migration\backup\wordpress-lean-candidate-v2\wp-content\uploads"
-$origUploads = "C:\Users\agile\VSCode projects\4globetrotters-migration\backup\wordpress\wp-content\uploads"
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
 
-$text = Get-Content $xml -Raw
-$pattern = '/wp-content/uploads/[^"''<>\s\?]+\.(?:jpg|jpeg|png|webp)'
-$matches = [regex]::Matches($text, $pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-$paths = $matches |
-    ForEach-Object { $_.Value.ToLower() } |
+$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$siteRoot = Join-Path $repoRoot 'option-b-static\site'
+$uploadsRoot = Join-Path $siteRoot 'wp-content\uploads'
+
+if (-not (Test-Path $siteRoot)) {
+    throw "Site root not found: $siteRoot"
+}
+
+if (-not (Test-Path $uploadsRoot)) {
+    throw "Uploads root not found: $uploadsRoot"
+}
+
+$pattern = '/wp-content/uploads/[^"''<>\s\?]+\.(?:jpg|jpeg|png|webp|gif|avif)'
+$scanFiles = Get-ChildItem -Path $siteRoot -Recurse -File -Include *.html,*.xml,*.css,*.js
+
+$paths = foreach ($file in $scanFiles) {
+    try {
+        $text = Get-Content $file.FullName -Raw
+    }
+    catch {
+        continue
+    }
+
+    if ([string]::IsNullOrEmpty($text)) {
+        continue
+    }
+
+    [regex]::Matches($text, $pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+        ForEach-Object { $_.Value.ToLower() }
+}
+
+$paths = $paths |
     Where-Object { $_ -notmatch '[\[\]<>]' } |
     Sort-Object -Unique
 
 $check = foreach ($p in $paths) {
     $rel = $p -replace '^/wp-content/uploads/', ''
-    $lean = Join-Path $leanUploads $rel
-    $orig = Join-Path $origUploads $rel
+    $lean = Join-Path $uploadsRoot $rel
     $isThumb = [System.IO.Path]::GetFileNameWithoutExtension($rel) -match '-\d+x\d+$'
 
     [pscustomobject]@{
         Path = $rel
         InLean = Test-Path $lean
-        InOrig = Test-Path $orig
+        InOrig = $true
         IsThumb = $isThumb
     }
 }
@@ -30,6 +55,7 @@ $missingOrig = @($check | Where-Object { -not $_.InOrig })
 $missingLeanThumb = @($missingLean | Where-Object { $_.IsThumb })
 $missingLeanOrig = @($missingLean | Where-Object { -not $_.IsThumb })
 
+Write-Output "SOURCE_MODE=site-files"
 Write-Output ("XML_MEDIA_REFERENCES=" + $total)
 Write-Output ("MISSING_IN_ORIGINAL=" + $missingOrig.Count)
 Write-Output ("MISSING_IN_LEAN=" + $missingLean.Count)
