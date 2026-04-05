@@ -22,7 +22,20 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
 .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; }
 
 /* ── Page Header / Hero Banner ───────────────── */
-.page-hero { background: #1a1a1a; padding: 100px 24px 60px; margin-top: 64px; text-align: center; }
+/* Use a taller hero to preserve more of people in photos (heads/feet) */
+.page-hero {
+    background: #1a1a1a;
+    padding: 100px 24px 60px;
+    margin-top: 64px;
+    text-align: center;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-position: center center, center center !important;
+    background-size: cover, contain !important;
+    background-repeat: no-repeat, no-repeat !important;
+}
 .page-hero h1 { color: #fff; font-size: clamp(1.8rem, 4vw, 2.8rem); max-width: 800px; margin: 0 auto 12px; }
 .page-hero .page-meta { color: rgba(255,255,255,.6); font-size: .9rem; font-family: 'Inter', sans-serif; }
 .page-hero .page-meta a { color: rgba(255,255,255,.75); border-bottom: 1px solid rgba(255,255,255,.3); }
@@ -137,7 +150,7 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
   .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #fff; padding: 24px; gap: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.1); }
   .nav-links.open { display: flex; }
   .nav-toggle { display: block; }
-  .page-hero { padding: 90px 20px 40px; }
+    .page-hero { padding: 90px 20px 40px; min-height: 320px; }
   .page-content { padding: 32px 20px 60px; }
   .post-cards { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
