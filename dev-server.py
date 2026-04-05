@@ -14,7 +14,12 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/wp-content/uploads/"):
-            self._proxy_to_live()
+            # Try local file first, fall back to live site
+            local_path = os.path.join(SITE_DIR, self.path.lstrip("/"))
+            if os.path.isfile(local_path):
+                super().do_GET()
+            else:
+                self._proxy_to_live()
         else:
             super().do_GET()
 

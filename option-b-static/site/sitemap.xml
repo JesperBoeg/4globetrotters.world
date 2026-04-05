@@ -1184,4 +1184,22 @@
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://4globetrotters.world/backpacking-phang-nga-and-krabi-with-a-1-year-old/</loc>
+    <lastmod>2012-04-09</lastmod>
+    <priority>0.7</priority>
+    <changefreq>never</changefreq>
+  </url>
+  <url>
+    <loc>https://4globetrotters.world/koh-lanta-tsunami-warning-and-krabi-with-a-1-year-old/</loc>
+    <lastmod>2012-04-15</lastmod>
+    <priority>0.7</priority>
+    <changefreq>never</changefreq>
+  </url>
+  <url>
+    <loc>https://4globetrotters.world/christmas-in-thailand-with-a-3-month-old/</loc>
+    <lastmod>2012-12-31</lastmod>
+    <priority>0.7</priority>
+    <changefreq>never</changefreq>
+  </url>
 </urlset>
