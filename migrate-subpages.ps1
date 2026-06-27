@@ -210,6 +210,8 @@ foreach ($dir in $dirs) {
         [void]$sb.AppendLine('  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">')
         [void]$sb.AppendLine('  <link rel="stylesheet" href="/assets/wp-simple/css/font-awesome.min.css">')
         [void]$sb.AppendLine('  <link rel="stylesheet" href="/assets/subpage.css">')
+        [void]$sb.AppendLine('  <link rel="stylesheet" href="/assets/analytics-consent.css">')
+        [void]$sb.AppendLine('  <script src="/assets/analytics-consent.js" defer></script>')
         [void]$sb.AppendLine('</head>')
         [void]$sb.AppendLine('<body>')
         [void]$sb.AppendLine('')
