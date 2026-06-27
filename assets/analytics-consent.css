@@ -1,0 +1,66 @@
+/* 4Globetrotters — cookie consent banner */
+#consent-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: #1f2d3d;
+  color: #f5f7fa;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.25);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+#consent-banner .consent-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+#consent-banner .consent-text {
+  flex: 1 1 320px;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+#consent-banner .consent-text a {
+  color: #9ecbff;
+  text-decoration: underline;
+}
+#consent-banner .consent-actions {
+  display: flex;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+#consent-banner .consent-btn {
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+#consent-banner .consent-accept {
+  background: #2e7d32;
+  color: #fff;
+}
+#consent-banner .consent-accept:hover {
+  background: #276a2a;
+}
+#consent-banner .consent-decline {
+  background: transparent;
+  color: #cfd8e3;
+  border: 1px solid #51607a;
+}
+#consent-banner .consent-decline:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+@media (max-width: 540px) {
+  #consent-banner .consent-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
