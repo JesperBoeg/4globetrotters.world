@@ -78,6 +78,11 @@
     <div id="destinations-map"></div>
   </div>
   <div class="map-legend" id="mapLegend">
+    <button type="button" data-filter="/malaysia-kuala-lumpur/">Kuala Lumpur</button>
+    <button type="button" data-filter="/indonesia-komodo-flores/">Komodo &amp; Flores</button>
+    <button type="button" data-filter="/indonesia-lombok-rinjani/">Lombok &amp; Rinjani</button>
+    <button type="button" data-filter="/indonesia-sumatra/">Sumatra</button>
+    <button type="button" data-filter="/sri-lanka/">Sri Lanka</button>
     <button type="button" data-filter="/peru/">Peru</button>
     <button type="button" data-filter="/ecuador-july-2024/">Ecuador</button>
     <button type="button" data-filter="/galapagos-june-2024/">Galapagos</button>
@@ -107,6 +112,61 @@
 <main class="page-content">
 
 <div class="dest-grid" id="destGrid">
+
+<div class="dest-card">
+  <a href="/malaysia-kuala-lumpur/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Kuala Lumpur</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/malaysia-kuala-lumpur/">Malaysia &mdash; Kuala Lumpur</a></h2>
+    <p class="dest-when">June &amp; July 2026</p>
+    <p>Our hub for this Southeast Asia leg &mdash; skyscrapers, street food and air-conditioning between Indonesia&rsquo;s jungles and volcanoes.</p>
+    <a href="/malaysia-kuala-lumpur/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/indonesia-komodo-flores/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Komodo &amp; Flores</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/indonesia-komodo-flores/">Indonesia &mdash; Komodo &amp; Flores</a></h2>
+    <p class="dest-when">June &ndash; July 2026</p>
+    <p>A liveaboard boat through Komodo National Park &mdash; Komodo dragons, pink beaches, manta rays and world-class snorkelling.</p>
+    <a href="/indonesia-komodo-flores/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/indonesia-lombok-rinjani/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Lombok &amp; Rinjani</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/indonesia-lombok-rinjani/">Indonesia &mdash; Lombok &amp; Rinjani</a></h2>
+    <p class="dest-when">July 2026</p>
+    <p>A three-day trek up Mount Rinjani, Indonesia&rsquo;s second-highest volcano, with its crater lake and a brutal summit morning.</p>
+    <a href="/indonesia-lombok-rinjani/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/indonesia-sumatra/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Sumatra</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/indonesia-sumatra/">Indonesia &mdash; Sumatra</a></h2>
+    <p class="dest-when">July 2026</p>
+    <p>Jungle trekking in Gunung Leuser to find wild orangutans, sunrise on Mount Sibayak, and the vast caldera of Lake Toba.</p>
+    <a href="/indonesia-sumatra/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
+
+<div class="dest-card">
+  <a href="/sri-lanka/" class="dest-card-img" style="background:#1a1a1a; display:flex; align-items:center; justify-content:center; aspect-ratio:4/3;"><span style="color:#fff; font-family:'Playfair Display',serif; font-size:1.4rem; text-align:center; padding:20px;">Sri Lanka</span></a>
+  <div class="dest-card-body">
+    <p class="dest-region">Asia</p>
+    <h2><a href="/sri-lanka/">Sri Lanka</a></h2>
+    <p class="dest-when">July &ndash; August 2026</p>
+    <p>Sigiriya&rsquo;s rock fortress, elephant safaris, tea country by train to Ella, surf at Arugam Bay, and the buzz of Colombo.</p>
+    <a href="/sri-lanka/" class="read-more">Explore &rarr;</a>
+  </div>
+</div>
 
 <div class="dest-card">
   <a href="/peru/" class="dest-card-img"><img src="/wp-content/uploads/P1020357.jpg" alt="Peru"></a>
@@ -477,6 +537,11 @@
       });
 
       var destinations = [
+        { lat: 3.14, lng: 101.69, title: 'Kuala Lumpur', filter: '/malaysia-kuala-lumpur/' },
+        { lat: -8.49, lng: 119.89, title: 'Komodo & Flores', filter: '/indonesia-komodo-flores/' },
+        { lat: -8.41, lng: 116.46, title: 'Lombok & Rinjani', filter: '/indonesia-lombok-rinjani/' },
+        { lat: 3.55, lng: 98.10, title: 'Sumatra', filter: '/indonesia-sumatra/' },
+        { lat: 7.96, lng: 80.76, title: 'Sri Lanka', filter: '/sri-lanka/' },
         { lat: -13.16, lng: -72.55, title: 'Peru', filter: '/peru/' },
         { lat: -1.83, lng: -78.18, title: 'Ecuador', filter: '/ecuador-july-2024/' },
         { lat: -0.95, lng: -90.97, title: 'Galapagos', filter: '/galapagos-june-2024/' },
