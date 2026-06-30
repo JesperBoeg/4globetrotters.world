@@ -26,6 +26,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://4globetrotters.world/kuala-lumpur-stopover/</loc>
+    <lastmod>2026-06-28</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://4globetrotters.world/indonesia-komodo-flores/</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
