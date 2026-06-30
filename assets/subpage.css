@@ -154,4 +154,11 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
   .page-content { padding: 32px 20px 60px; }
   .post-cards { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  /* Galleries: one image per row on mobile */
+  .page-content .wp-block-gallery { grid-template-columns: 1fr; }
+  .page-content .wp-block-gallery > .wp-block-image img,
+  .page-content .wp-block-gallery:has(> .wp-block-image:only-child) img,
+  .page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) img {
+    height: auto;
+  }
 }
