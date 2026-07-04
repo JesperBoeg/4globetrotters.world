@@ -20,3 +20,8 @@ option-b-static/site/wp-content/uploads/
 .DS_Store
 Thumbs.db
 .vscode/*.log
+
+# YouTube upload tooling secrets — NEVER commit these
+tools/client_secret.json
+tools/token.json
+tools/youtube_uploads.json

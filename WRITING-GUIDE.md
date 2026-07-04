@@ -128,3 +128,21 @@ placeholders (dark box with the name) because there are no photos yet. To swap i
 a real photo, replace the placeholder `<a class="dest-card-img" style="…"><span>…</span></a>`
 with `<a class="dest-card-img"><img src="…" alt="…"></a>` (copy the format from
 any older card like Peru).
+
+## Videos (YouTube upload + embed)
+
+Trip folders contain `.MOV`/`.mp4` clips too. To include them:
+
+1. Upload the clips to the YouTube channel with the uploader (one-time setup in
+   `tools/YOUTUBE-SETUP.md`):
+   ```
+   python tools/youtube_upload.py --folder "G:\My Drive\Pictures\<trip folder>" --prefix "<Place>"
+   ```
+   It uploads new clips as **unlisted**, skips ones already uploaded, and prints a
+   `<div class='video-embed'>…</div>` line for each.
+2. Paste those `video-embed` lines into the post where the clip belongs (a
+   `<h2>Videos</h2>` section, or inline next to the related photos — both patterns
+   already exist across the site). The `.video-embed` CSS is already in
+   `assets/subpage.css`.
+3. Consider videos on EVERY post, same as photos — review the clips, pick the good
+   ones, and place them with the matching moment.
