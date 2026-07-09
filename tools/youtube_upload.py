@@ -91,8 +91,21 @@ def get_service():
                     f"(see tools/YOUTUBE-SETUP.md)."
                 )
             flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRET), SCOPES)
-            creds = flow.run_local_server(port=0)
+            print("\n=== Google sign-in required ===", flush=True)
+            print("A browser tab should open. If it doesn't, copy the URL that "
+                  "appears below into your browser.\n", flush=True)
+            try:
+                creds = flow.run_local_server(
+                    port=8765,
+                    open_browser=True,
+                    authorization_prompt_message="Open this URL to authorize:\n{url}",
+                    success_message="Done — you can close this tab and return to the terminal.",
+                )
+            except Exception as e:
+                print(f"\nOAuth flow failed: {type(e).__name__}: {e}", flush=True)
+                raise
         TOKEN.write_text(creds.to_json(), encoding="utf-8")
+        print("Auth OK — token cached.", flush=True)
     return build("youtube", "v3", credentials=creds)
 
 
