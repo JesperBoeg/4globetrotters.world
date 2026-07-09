@@ -32,9 +32,14 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://4globetrotters.world/indonesia-komodo-flores/</loc>
+    <loc>https://4globetrotters.world/indonesia/</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://4globetrotters.world/indonesia-komodo-flores/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://4globetrotters.world/flores-arrival-labuan-bajo/</loc>
