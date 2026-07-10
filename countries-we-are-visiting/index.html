@@ -502,8 +502,8 @@
 
       var destinations = [
         { lat: 3.14, lng: 101.69, title: 'Kuala Lumpur', filter: '/malaysia-kuala-lumpur/' },
-        { lat: -8.49, lng: 119.89, title: 'Indonesia — Komodo & Flores', filter: '/indonesia/' },
-        { lat: -8.41, lng: 116.46, title: 'Indonesia — Lombok & Rinjani', filter: '/indonesia/' },
+        { lat: -8.49, lng: 119.89, title: 'Indonesia — Komodo & Flores', filter: '/indonesia/', href: '/indonesia/#komodo-flores' },
+        { lat: -8.41, lng: 116.46, title: 'Indonesia — Lombok & Rinjani', filter: '/indonesia/', href: '/indonesia/#lombok-rinjani' },
         { lat: -13.16, lng: -72.55, title: 'Peru', filter: '/peru/' },
         { lat: -1.83, lng: -78.18, title: 'Ecuador', filter: '/ecuador-july-2024/' },
         { lat: -0.95, lng: -90.97, title: 'Galapagos', filter: '/galapagos-june-2024/' },
@@ -535,6 +535,7 @@
         var marker = L.marker([d.lat, d.lng], { icon: pinIcon }).addTo(map);
         marker.bindTooltip(d.title, { direction: 'top', offset: [0, -36], className: 'map-tooltip' });
         marker.on('click', function() {
+          if (d.href) { window.location.href = d.href; return; }
           mapFilterTerm = d.filter || d.title;
           refresh();
           document.getElementById('destGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
