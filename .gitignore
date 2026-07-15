@@ -25,3 +25,8 @@ Thumbs.db
 tools/client_secret.json
 tools/token.json
 tools/youtube_uploads.json
+
+# Media picker working files (local only)
+tools/.picker_cache/
+tools/picker_state.json
+tools/blog_selection.json
