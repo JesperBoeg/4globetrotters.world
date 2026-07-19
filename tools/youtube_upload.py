@@ -96,7 +96,7 @@ def get_service():
                   "appears below into your browser.\n", flush=True)
             try:
                 creds = flow.run_local_server(
-                    port=8765,
+                    port=8766,
                     open_browser=True,
                     authorization_prompt_message="Open this URL to authorize:\n{url}",
                     success_message="Done — you can close this tab and return to the terminal.",

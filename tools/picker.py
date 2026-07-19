@@ -202,22 +202,50 @@ def pano_jpg(folder: Path, name: str) -> bytes:
     return data
 
 
-def vid_poster(folder: Path, name: str, size: int) -> bytes:
-    cp = _cache_path(folder, name, "vidposter", size)
+def vid_rotation(folder: Path, name: str) -> int:
+    """Rotation (deg, one of 0/90/180/270) the file's metadata says to apply.
+    Reads both the legacy 'rotate' tag and the modern display-matrix side data."""
+    src = folder / name
+    try:
+        out = subprocess.run(
+            [FFPROBE, "-v", "quiet", "-select_streams", "v:0", "-print_format", "json",
+             "-show_entries", "stream_tags=rotate:stream_side_data=rotation", str(src)],
+            capture_output=True, text=True)
+        j = json.loads(out.stdout or "{}")
+        st = (j.get("streams") or [{}])[0]
+        rot = st.get("tags", {}).get("rotate")
+        if rot is None:
+            for sd in st.get("side_data_list", []):
+                if "rotation" in sd:
+                    rot = sd["rotation"]
+                    break
+        if rot is None:
+            return 0
+        return int(round(float(rot))) % 360
+    except Exception:
+        return 0
+
+
+def vid_poster(folder: Path, name: str, size: int, extra_rot: int = 0) -> bytes:
+    cp = _cache_path(folder, name, f"vidposter_{extra_rot}", size)
     if cp.exists():
         return cp.read_bytes()
     src = folder / name
-    # grab a frame ~1s in
+    # ffmpeg auto-applies the file's own rotation metadata by default. We add any
+    # MANUAL override on top with a transpose chain.
+    vf = f"scale={size}:-1"
+    tp = {90: "transpose=1", 180: "transpose=2,transpose=2",
+          270: "transpose=2"}.get(extra_rot % 360)
+    if tp:
+        vf = tp + "," + vf
     out = subprocess.run(
         [FFMPEG, "-y", "-ss", "1", "-i", str(src), "-frames:v", "1",
-         "-vf", f"scale={size}:-1", "-f", "mjpeg", "pipe:1"],
-        capture_output=True)
+         "-vf", vf, "-f", "mjpeg", "pipe:1"], capture_output=True)
     data = out.stdout
     if not data:  # fallback: first frame
         out = subprocess.run(
             [FFMPEG, "-y", "-i", str(src), "-frames:v", "1",
-             "-vf", f"scale={size}:-1", "-f", "mjpeg", "pipe:1"],
-            capture_output=True)
+             "-vf", vf, "-f", "mjpeg", "pipe:1"], capture_output=True)
         data = out.stdout
     if data:
         cp.write_bytes(data)
@@ -289,8 +317,15 @@ class Handler(BaseHTTPRequestHandler):
             state = load_state().get(str(folder), {"photos": [], "videos": []})
             photos = [{"name": p.name, "date": capture_label(p),
                        "k360": classify_360(p)} for p in imgs]
-            videos = [{"name": p.name, "date": capture_label(p),
-                       "dur": round(vid_duration(folder, p.name), 1)} for p in vids]
+            # probe video durations + rotation in parallel (ffprobe is the slow part)
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=8) as ex:
+                durs = list(ex.map(lambda p: vid_duration(folder, p.name), vids))
+                rots = list(ex.map(lambda p: vid_rotation(folder, p.name), vids))
+            man = state.get("video_rot", {})   # manual per-video overrides (deg)
+            videos = [{"name": p.name, "date": capture_label(p), "dur": round(d, 1),
+                       "rot": r, "manrot": int(man.get(p.name, 0))}
+                      for p, d, r in zip(vids, durs, rots)]
             return self._send(200, {
                 "folder": str(folder),
                 "photos": photos, "videos": videos,
@@ -302,8 +337,10 @@ class Handler(BaseHTTPRequestHandler):
             folder = Path(q["folder"][0]); name = q["name"][0]
             kind = q.get("kind", ["img"])[0]
             size = int(q.get("size", [str(THUMB)])[0])
+            extra = int(q.get("rot", ["0"])[0])
             try:
-                data = vid_poster(folder, name, size) if kind == "vid" else img_thumb(folder, name, size)
+                data = (vid_poster(folder, name, size, extra) if kind == "vid"
+                        else img_thumb(folder, name, size))
                 return self._send(200, data, "image/jpeg")
             except Exception as e:
                 return self._send(500, str(e), "text/plain")
@@ -341,13 +378,16 @@ class Handler(BaseHTTPRequestHandler):
             folder = body["folder"]
             photos = body.get("photos", [])
             videos = body.get("videos", [])
+            video_rot = {k: int(v) for k, v in body.get("video_rot", {}).items() if int(v) % 360}
             # per-folder state
             state = load_state()
-            state[folder] = {"photos": photos, "videos": videos}
+            state[folder] = {"photos": photos, "videos": videos, "video_rot": video_rot}
             save_state(state)
-            # the actual handoff file
+            # the actual handoff file (video_rot = manual rotation in deg to bake
+            # in on upload, on top of the file's own metadata rotation)
             SELECTION_FILE.write_text(json.dumps({
                 "folder": folder, "photos": photos, "videos": videos,
+                "video_rot": video_rot,
                 "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
             }, indent=2, ensure_ascii=False), encoding="utf-8")
             return self._send(200, {"ok": True,
@@ -355,11 +395,12 @@ class Handler(BaseHTTPRequestHandler):
                                     "file": str(SELECTION_FILE)})
 
         if u.path == "/api/state":
-            # autosave ticks per folder as you go
+            # autosave ticks + rotations per folder as you go
             folder = body["folder"]
             state = load_state()
             state[folder] = {"photos": body.get("photos", []),
-                             "videos": body.get("videos", [])}
+                             "videos": body.get("videos", []),
+                             "video_rot": {k: int(v) for k, v in body.get("video_rot", {}).items()}}
             save_state(state)
             return self._send(200, {"ok": True})
 
@@ -400,8 +441,8 @@ PAGE = r"""<!doctype html>
           box-shadow:0 2px 10px rgba(0,0,0,.06); transition:transform .12s, border-color .12s; position:relative; }
   .cell:hover { transform:translateY(-2px); }
   .cell.sel { border-color:var(--accent); }
-  .cell .imgwrap { aspect-ratio:4/3; background:#e9e9e9; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .cell img { width:100%; height:100%; object-fit:cover; display:block; }
+  .cell .imgwrap { height:300px; background:#222; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .cell img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
   .cell .cap { padding:7px 10px; font-size:.72rem; color:#666; display:flex; justify-content:space-between; gap:8px; }
   .cell .cap .nm { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .check { position:absolute; top:8px; left:8px; width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.9);
@@ -411,6 +452,10 @@ PAGE = r"""<!doctype html>
   .badge360 { position:absolute; top:8px; right:8px; background:#2e86de; color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:10px; letter-spacing:.3px; }
   .badgeraw { position:absolute; top:8px; right:8px; background:#e67e22; color:#fff; font-size:.66rem; font-weight:700; padding:2px 7px; border-radius:10px; }
   .cell.raw { opacity:.7; }
+  .rotbtn { position:absolute; bottom:8px; left:8px; width:30px; height:30px; border-radius:50%;
+            background:rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;
+            font-size:17px; cursor:pointer; user-select:none; }
+  .rotbtn:hover { background:var(--accent); }
   #pano { width:94vw; height:82vh; }
   .peek { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,.55); color:#fff; font-size:.68rem; padding:3px 8px; border-radius:10px; }
   .pager { display:flex; align-items:center; justify-content:center; gap:12px; margin:22px 0 4px; flex-wrap:wrap; }
@@ -419,11 +464,24 @@ PAGE = r"""<!doctype html>
   /* fullscreen preview */
   .overlay { position:fixed; inset:0; background:rgba(0,0,0,.9); z-index:50; display:none; align-items:center; justify-content:center; flex-direction:column; }
   .overlay.on { display:flex; }
-  .overlay img, .overlay video { max-width:94vw; max-height:82vh; border-radius:6px; }
-  .overlay .obar { color:#fff; margin-top:14px; display:flex; gap:14px; align-items:center; }
+  .overlay #overlayContent { display:flex; align-items:center; justify-content:center; max-width:94vw; }
+  /* cap media height so the button bar below always stays on-screen and reachable */
+  .overlay img, .overlay video { max-width:94vw; max-height:76vh; border-radius:6px; }
+  .overlay .obar { color:#fff; margin-top:14px; display:flex; gap:14px; align-items:center; position:relative; z-index:60; flex:0 0 auto; }
   .overlay .obar .btn { background:#222; color:#fff; border-color:#444; }
+  /* always-reachable close, even if a rotated video overflows its box */
+  .overlay #ovCloseX { position:fixed; top:14px; right:16px; z-index:70; width:40px; height:40px;
+                       border-radius:50%; border:0; background:rgba(0,0,0,.65); color:#fff; font-size:22px;
+                       line-height:40px; text-align:center; cursor:pointer; }
+  .overlay #ovCloseX:hover { background:var(--accent); }
   .empty { text-align:center; color:#888; padding:60px; }
-</style></head>
+  .badge360 { position:absolute; top:8px; right:8px; background:#2d6cdf; color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:10px; letter-spacing:.3px; }
+  .badgeRaw { position:absolute; top:8px; right:8px; background:#8a6d00; color:#fff; font-size:.66rem; padding:2px 7px; border-radius:10px; }
+  #pano { width:94vw; height:80vh; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+</head>
 <body>
 <header id="hdr" style="display:none">
   <h1 id="folderName">—</h1>
@@ -454,9 +512,11 @@ PAGE = r"""<!doctype html>
 </main>
 
 <div class="overlay" id="overlay">
+  <button id="ovCloseX" title="Close (esc)">&times;</button>
   <div id="overlayContent"></div>
   <div class="obar">
     <button class="btn" id="ovToggle">Toggle select (space)</button>
+    <button class="btn" id="ovRotate" style="display:none">↻ Rotate 90° (r)</button>
     <button class="btn" id="ovClose">Close (esc)</button>
   </div>
 </div>
@@ -466,7 +526,12 @@ const PER = 6;
 let folder = null, tab = "photos";
 let data = { photos: [], videos: [] };
 let sel = { photos: new Set(), videos: new Set() };
+let videoRot = {};            // name -> manual extra rotation (deg)
 let page = 0, selOnly = false, ovIndex = -1;
+
+function metaRot(it) { return ((it.rot||0) % 360 + 360) % 360; }        // from file metadata
+function manRot(name) { return ((videoRot[name]||0) % 360 + 360) % 360; } // manual override
+function totalRot(it) { return (metaRot(it) + manRot(it.name)) % 360; }   // what the browser must show
 
 const $ = s => document.querySelector(s);
 
@@ -483,10 +548,19 @@ loadFolders();
 $("#openFolder").onclick = async () => {
   const name = $("#folderSelect").value;
   folder = window._root.replace(/\\+$/,"") + "\\" + name;
-  const r = await fetch("/api/media?folder=" + encodeURIComponent(folder));
-  data = await r.json();
+  const btn = $("#openFolder");
+  const oldTxt = btn.textContent;
+  btn.disabled = true; btn.textContent = "Loading photos & videos… (a big folder can take a few seconds)";
+  try {
+    const r = await fetch("/api/media?folder=" + encodeURIComponent(folder));
+    data = await r.json();
+  } finally {
+    btn.disabled = false; btn.textContent = oldTxt;
+  }
   sel.photos = new Set(data.selected_photos || []);
   sel.videos = new Set(data.selected_videos || []);
+  videoRot = {};
+  (data.videos || []).forEach(v => { if (v.manrot) videoRot[v.name] = v.manrot; });
   $("#folderName").textContent = name;
   $("#startScreen").style.display = "none";
   $("#browser").style.display = "block";
@@ -522,20 +596,27 @@ function render() {
     const isRaw = it.k360 === "360raw";
     div.className = "cell" + (sel[tab].has(it.name) ? " sel" : "") + (isRaw ? " raw" : "");
     const kind = tab === "videos" ? "vid" : "img";
-    const thumb = "/api/thumb?folder=" + encodeURIComponent(folder) + "&name=" + encodeURIComponent(it.name) + "&kind=" + kind;
-    let badge = "";
-    if (tab === "videos") { const m = Math.floor(it.dur/60), s = Math.round(it.dur%60); badge = "<div class='badge'>" + m + ":" + String(s).padStart(2,"0") + "</div>"; }
+    let thumb = "/api/thumb?folder=" + encodeURIComponent(folder) + "&name=" + encodeURIComponent(it.name) + "&kind=" + kind;
+    if (tab === "videos" && manRot(it.name)) thumb += "&rot=" + manRot(it.name);
+    let badge = "", rotbtn = "";
+    if (tab === "videos") {
+      const m = Math.floor(it.dur/60), s = Math.round(it.dur%60);
+      badge = "<div class='badge'>" + m + ":" + String(s).padStart(2,"0") + "</div>";
+      rotbtn = "<div class='rotbtn' title='Rotate 90°'>↻</div>";
+    }
     else if (it.k360 === "360") { badge = "<div class='badge360'>360°</div>"; }
-    else if (it.k360 === "360raw") { badge = "<div class='badgeraw'>360 · needs Studio</div>"; }
+    else if (it.k360 === "360raw") { badge = "<div class='badgeRaw'>360 · needs Studio</div>"; }
     div.innerHTML =
       "<div class='imgwrap'><img loading='lazy' src='" + thumb + "'></div>" +
-      "<div class='check'>" + (sel[tab].has(it.name) ? "✓" : "") + "</div>" + badge +
+      "<div class='check'>" + (sel[tab].has(it.name) ? "✓" : "") + "</div>" + badge + rotbtn +
       "<div class='peek'>🔍 view</div>" +
       "<div class='cap'><span class='nm' title='" + it.name + "'>" + it.name + "</span><span>" + (it.date||"") + "</span></div>";
     div.querySelector(".imgwrap").onclick = () => openPreview(idx);
     div.querySelector(".peek").onclick = (e) => { e.stopPropagation(); openPreview(idx); };
     div.querySelector(".check").onclick = (e) => { e.stopPropagation(); toggle(it.name); };
     div.querySelector(".cap").onclick = () => toggle(it.name);
+    const rb = div.querySelector(".rotbtn");
+    if (rb) rb.onclick = (e) => { e.stopPropagation(); rotateVideo(it.name); };
     g.appendChild(div);
   });
   // pager
@@ -557,10 +638,33 @@ function toggle(name) {
   render();
 }
 
+function rotateVideo(name) {
+  videoRot[name] = ((videoRot[name]||0) + 90) % 360;
+  // if previewing this video, update its live transform
+  const v = document.querySelector("#overlayContent video");
+  if (v && ovIndex >= 0 && items()[ovIndex] && items()[ovIndex].name === name) applyVideoRot(v, items()[ovIndex]);
+  render();  // refresh poster with new rotation
+}
+
+function applyVideoRot(videoEl, it) {
+  const deg = totalRot(it);
+  videoEl.style.transform = "rotate(" + deg + "deg)";
+  // When rotated 90/270 the video's *visual* height equals its box WIDTH, so we must
+  // cap the box width by the available vertical space (76vh) — otherwise the rotated
+  // video overflows downward and covers the button bar / close control.
+  if (deg === 90 || deg === 270) {
+    videoEl.style.maxWidth = "76vh";
+    videoEl.style.maxHeight = "94vw";
+  } else {
+    videoEl.style.maxWidth = "94vw";
+    videoEl.style.maxHeight = "76vh";
+  }
+}
+
 async function autosave() {
   if (!folder) return;
   fetch("/api/state", { method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ folder, photos:[...sel.photos], videos:[...sel.videos] }) });
+    body: JSON.stringify({ folder, photos:[...sel.photos], videos:[...sel.videos], video_rot: videoRot }) });
 }
 
 // tabs
@@ -573,7 +677,7 @@ $("#selOnly").onchange = (e) => { selOnly = e.target.checked; page = 0; render()
 // save
 $("#saveBtn").onclick = async () => {
   const r = await fetch("/api/save", { method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ folder, photos:[...sel.photos], videos:[...sel.videos] }) });
+    body: JSON.stringify({ folder, photos:[...sel.photos], videos:[...sel.videos], video_rot: videoRot }) });
   const j = await r.json();
   alert("Saved!\n\n" + j.photos + " photos and " + j.videos + " videos.\n\nNow tell the assistant: \"selection done\".");
 };
@@ -588,6 +692,9 @@ function openPreview(idx) {
   const c = $("#overlayContent");
   if (tab === "videos") {
     c.innerHTML = "<video controls autoplay src='/api/videofile?folder=" + encodeURIComponent(folder) + "&name=" + encodeURIComponent(it.name) + "'></video>";
+    const v = c.querySelector("video");
+    v.addEventListener("loadedmetadata", () => applyVideoRot(v, it));
+    applyVideoRot(v, it);
   } else if (it.k360 === "360") {
     // interactive 360 sphere
     c.innerHTML = "<div id='pano'></div>";
@@ -603,14 +710,18 @@ function openPreview(idx) {
   }
   $("#overlay").classList.add("on");
   $("#ovToggle").textContent = (sel[tab].has(it.name) ? "✓ Selected — click to unselect" : "Select this");
+  $("#ovRotate").style.display = (tab === "videos") ? "inline-block" : "none";
 }
 function closePreview() { destroyPano(); $("#overlay").classList.remove("on"); $("#overlayContent").innerHTML = ""; ovIndex = -1; }
 $("#ovClose").onclick = closePreview;
+$("#ovCloseX").onclick = closePreview;
 $("#ovToggle").onclick = () => { const it = items()[ovIndex]; if (it) { toggle(it.name); openPreview(ovIndex); } };
+$("#ovRotate").onclick = () => { const it = items()[ovIndex]; if (it && tab === "videos") rotateVideo(it.name); };
 document.addEventListener("keydown", (e) => {
   if ($("#overlay").classList.contains("on")) {
     if (e.key === "Escape") closePreview();
     if (e.key === " ") { e.preventDefault(); $("#ovToggle").click(); }
+    if ((e.key === "r" || e.key === "R") && tab === "videos") { const it = items()[ovIndex]; if (it) rotateVideo(it.name); }
     if (e.key === "ArrowRight" && ovIndex < items().length-1) openPreview(ovIndex+1);
     if (e.key === "ArrowLeft" && ovIndex > 0) openPreview(ovIndex-1);
   } else if ($("#browser").style.display !== "none") {
