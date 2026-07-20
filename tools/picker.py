@@ -354,17 +354,57 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(500, str(e), "text/plain")
 
         if path == "/api/videofile":
-            # stream the raw video for inline playback
+            # Stream the raw video for inline playback with HTTP Range support.
+            # Browsers seek/abort constantly; we must honour Range and tolerate the
+            # client disconnecting mid-stream, otherwise a broken pipe crashes the server.
             folder = Path(q["folder"][0]); name = q["name"][0]
             src = folder / name
-            data = src.read_bytes()
             ctype = "video/mp4" if src.suffix.lower() in (".mp4", ".m4v") else "video/quicktime"
-            self.send_response(200)
+            try:
+                fsize = src.stat().st_size
+            except OSError:
+                return self._send(404, {"error": "not found"})
+
+            # parse a single "bytes=start-end" range (the only form browsers send)
+            start, end = 0, fsize - 1
+            rng = self.headers.get("Range")
+            is_partial = False
+            if rng and rng.startswith("bytes="):
+                try:
+                    s, _, e = rng[6:].partition("-")
+                    if s:
+                        start = int(s)
+                        end = int(e) if e else fsize - 1
+                    elif e:                       # suffix range: bytes=-N
+                        start = max(0, fsize - int(e))
+                    start = max(0, start); end = min(end, fsize - 1)
+                    if start <= end:
+                        is_partial = True
+                except ValueError:
+                    is_partial = False           # malformed -> serve whole file
+
+            length = (end - start + 1) if is_partial else fsize
+            self.send_response(206 if is_partial else 200)
             self.send_header("Content-Type", ctype)
-            self.send_header("Content-Length", str(len(data)))
             self.send_header("Accept-Ranges", "bytes")
+            self.send_header("Content-Length", str(length))
+            if is_partial:
+                self.send_header("Content-Range", f"bytes {start}-{end}/{fsize}")
             self.end_headers()
-            self.wfile.write(data)
+
+            try:
+                with open(src, "rb") as f:
+                    f.seek(start)
+                    remaining = length
+                    while remaining > 0:
+                        chunk = f.read(min(1 << 20, remaining))   # 1 MiB chunks
+                        if not chunk:
+                            break
+                        self.wfile.write(chunk)
+                        remaining -= len(chunk)
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError):
+                # client seeked away or closed the tab mid-stream — ignore, don't crash
+                pass
             return
 
         return self._send(404, {"error": "not found"})
@@ -742,7 +782,19 @@ def main():
     args = ap.parse_args()
     ROOT = Path(args.root)
 
-    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    class ResilientServer(ThreadingHTTPServer):
+        daemon_threads = True
+        # A dropped connection (client seeks/closes a video) must never take the
+        # whole picker down — log nothing, just move on.
+        def handle_error(self, request, client_address):
+            import sys as _sys
+            exc = _sys.exc_info()[1]
+            if isinstance(exc, (BrokenPipeError, ConnectionResetError,
+                                ConnectionAbortedError, OSError)):
+                return
+            super().handle_error(request, client_address)
+
+    srv = ResilientServer(("127.0.0.1", args.port), Handler)
     url = f"http://localhost:{args.port}"
     print(f"Media picker running at {url}")
     print("Pick a folder, tick photos + videos, hit Save. Ctrl+C to stop.")
