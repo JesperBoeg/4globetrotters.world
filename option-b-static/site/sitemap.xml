@@ -78,6 +78,24 @@
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>https://4globetrotters.world/sigiriya-dambulla/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://4globetrotters.world/kandy/</loc>
+    <lastmod>2026-07-29</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://4globetrotters.world/sri-lanka/</loc>
+    <lastmod>2026-07-29</lastmod>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://4globetrotters.world/berastagi-and-samosir/</loc>
     <lastmod>2026-07-23</lastmod>
     <priority>0.7</priority>
