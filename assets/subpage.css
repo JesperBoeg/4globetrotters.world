@@ -72,34 +72,41 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
 .page-content .wp-block-image { margin: 32px 0; }
 .page-content .wp-block-image img { width: 100%; height: auto; max-height: 620px; object-fit: cover; border-radius: 8px; }
 
-/* WordPress gallery blocks — max 2 per row, large images */
+/* WordPress gallery blocks — justified rows: images sitting next to each other
+   share the same height, and each one's WIDTH flexes to its own aspect ratio so
+   the whole photo is always shown (no crop, no black letterbox frame).
+   Each .wp-block-image carries --ar (aspect ratio = width / height). */
 .page-content .wp-block-gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     margin: 40px 0;
+    --row-h: 320px;   /* target row height; rows flex around this */
 }
-/* Single image in gallery → full width */
-.page-content .wp-block-gallery:has(> .wp-block-image:only-child) {
-    grid-template-columns: 1fr;
+.page-content .wp-block-gallery > .wp-block-image {
+    margin: 0;
+    /* grow/shrink weighted by aspect ratio → equal height across a row */
+    flex: var(--ar, 1.333) 1 calc(var(--ar, 1.333) * var(--row-h));
+    /* stop a lone image on the last row from ballooning: cap at a sensible
+       max height (~460px), i.e. width = aspect ratio × 460px */
+    max-width: calc(var(--ar, 1.333) * 460px);
 }
-/* Odd last image (3rd, 5th…) → span full width so no orphan column */
-.page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) {
-    grid-column: 1 / -1;
-}
-.page-content .wp-block-gallery > .wp-block-image { margin: 0; }
 .page-content .wp-block-gallery > .wp-block-image img {
     width: 100%;
-    height: 360px;
-    object-fit: contain;
-    background: #1a1a1a;
+    height: 100%;
+    object-fit: cover;     /* fills its flex box exactly; box is already the
+                              photo's own aspect ratio, so nothing is cropped */
     border-radius: 8px;
     display: block;
 }
-/* Full-width images (single or orphan) get extra height */
-.page-content .wp-block-gallery:has(> .wp-block-image:only-child) img,
-.page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) img {
-    height: 520px;
+/* A lone image shouldn't blow up to full width — cap it and centre it */
+.page-content .wp-block-gallery:has(> .wp-block-image:only-child) { justify-content: center; }
+.page-content .wp-block-gallery > .wp-block-image:only-child {
+    flex: 0 1 auto;
+    max-width: 100%;
+}
+.page-content .wp-block-gallery > .wp-block-image:only-child img {
+    width: auto; height: auto; max-height: 620px; max-width: 100%;
 }
 
 /* Wide panorama images — full content width, natural aspect, never cropped */
@@ -175,11 +182,13 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
   .page-content { padding: 32px 20px 60px; }
   .post-cards { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  /* Galleries: one image per row on mobile */
-  .page-content .wp-block-gallery { grid-template-columns: 1fr; }
-  .page-content .wp-block-gallery > .wp-block-image img,
-  .page-content .wp-block-gallery:has(> .wp-block-image:only-child) img,
-  .page-content .wp-block-gallery > .wp-block-image:last-child:nth-child(2n+1):not(:nth-child(1)) img {
+  /* Galleries: one image per row on mobile, full photo at natural aspect */
+  .page-content .wp-block-gallery > .wp-block-image {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  .page-content .wp-block-gallery > .wp-block-image img {
     height: auto;
+    object-fit: contain;
   }
 }
