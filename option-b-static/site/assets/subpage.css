@@ -90,9 +90,9 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
     /* box height derives from its (flex-stretched) width via the photo's own
        aspect ratio — so the box is ALWAYS the photo's shape, never letterboxed */
     aspect-ratio: var(--ar, 1.333);
-    /* stop a lone image on the last row from ballooning: cap at a sensible
-       max height (~460px), i.e. width = aspect ratio × 460px */
-    max-width: calc(var(--ar, 1.333) * 460px);
+    /* keep a last-row orphan from ballooning very tall; img (cover) still
+       fills, so at most a tiny crop — never a black frame */
+    max-height: 520px;
     overflow: hidden;
     border-radius: 8px;
 }
