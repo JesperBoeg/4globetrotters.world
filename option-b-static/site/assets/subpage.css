@@ -87,16 +87,20 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
     margin: 0;
     /* grow/shrink weighted by aspect ratio → equal height across a row */
     flex: var(--ar, 1.333) 1 calc(var(--ar, 1.333) * var(--row-h));
+    /* box height derives from its (flex-stretched) width via the photo's own
+       aspect ratio — so the box is ALWAYS the photo's shape, never letterboxed */
+    aspect-ratio: var(--ar, 1.333);
     /* stop a lone image on the last row from ballooning: cap at a sensible
        max height (~460px), i.e. width = aspect ratio × 460px */
     max-width: calc(var(--ar, 1.333) * 460px);
+    overflow: hidden;
+    border-radius: 8px;
 }
 .page-content .wp-block-gallery > .wp-block-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;     /* fills its flex box exactly; box is already the
                               photo's own aspect ratio, so nothing is cropped */
-    border-radius: 8px;
     display: block;
 }
 /* A lone image shouldn't blow up to full width — cap it and centre it */
@@ -186,6 +190,7 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
   .page-content .wp-block-gallery > .wp-block-image {
     flex: 1 1 100%;
     max-width: 100%;
+    aspect-ratio: auto;   /* natural height, one per row */
   }
   .page-content .wp-block-gallery > .wp-block-image img {
     height: auto;
