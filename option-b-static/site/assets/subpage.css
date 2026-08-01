@@ -90,9 +90,6 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
     /* box height derives from its (flex-stretched) width via the photo's own
        aspect ratio — so the box is ALWAYS the photo's shape, never letterboxed */
     aspect-ratio: var(--ar, 1.333);
-    /* keep a last-row orphan from ballooning very tall; img (cover) still
-       fills, so at most a tiny crop — never a black frame */
-    max-height: 520px;
     overflow: hidden;
     border-radius: 8px;
 }
@@ -102,6 +99,15 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
     object-fit: cover;     /* fills its flex box exactly; box is already the
                               photo's own aspect ratio, so nothing is cropped */
     display: block;
+}
+/* The last image can wrap alone onto the final row. With a width-derived
+   aspect ratio it would sit narrow (empty space beside it) or, uncapped, grow
+   absurdly tall. Instead pin it to the row height and drop the aspect ratio:
+   alone on a row it grows to full width, sharing a row it matches its
+   neighbours — object-fit:cover trims any excess, never letterboxes. */
+.page-content .wp-block-gallery > .wp-block-image:last-child:not(:only-child) {
+    aspect-ratio: auto;
+    height: var(--row-h);
 }
 /* A lone image shouldn't blow up to full width — cap it and centre it */
 .page-content .wp-block-gallery:has(> .wp-block-image:only-child) { justify-content: center; }
