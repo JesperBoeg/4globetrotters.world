@@ -102,6 +102,8 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
 .page-content .wp-block-gallery > .wp-block-image img {
     width: 100%;
     height: 100%;
+    max-height: none;   /* override the 620px cap from the generic figure rule */
+    margin: 0;
     object-fit: cover;
     display: block;
 }
