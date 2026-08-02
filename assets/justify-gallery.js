@@ -53,12 +53,20 @@
 
     rows.forEach(function (cells) {
       var arSum = cells.reduce(function (s, it) { return s + it.ar; }, 0);
-      var avail = containerW - GAP * (cells.length - 1);
+      var totalGap = GAP * (cells.length - 1);
+      // -1px safety so rounding can never push the row past the container
+      // width and cause the flex row to wrap.
+      var avail = containerW - totalGap - 1;
       // justify the row to the full content width — no height cap: every row
       // always fills 100% of the width, images grow as tall as that requires
       var h = avail / arSum;
-      cells.forEach(function (it) {
-        var w = Math.round(h * it.ar);
+      var used = 0;
+      cells.forEach(function (it, i) {
+        // give the last cell the exact remainder so widths sum to `avail`
+        var w = (i === cells.length - 1)
+          ? (avail - used)
+          : Math.floor(h * it.ar);
+        used += w;
         it.el.style.width = w + 'px';
         it.el.style.height = Math.round(h) + 'px';
         it.el.style.flex = '0 0 auto';
