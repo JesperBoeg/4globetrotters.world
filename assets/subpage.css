@@ -185,13 +185,15 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
   .page-content { padding: 32px 20px 60px; }
   .post-cards { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  /* Galleries: one image per row on mobile, full photo at natural aspect */
-  .page-content .wp-block-gallery > .wp-block-image {
+  /* Galleries: one image per row on mobile — but only as the pre-JS fallback.
+     Once justify-gallery.js runs (.jg-ready) its inline sizes take over so the
+     justified rows work at every width. */
+  .page-content .wp-block-gallery:not(.jg-ready) > .wp-block-image {
     flex: 1 1 100%;
     max-width: 100%;
-    aspect-ratio: auto;   /* natural height, one per row */
+    aspect-ratio: auto;
   }
-  .page-content .wp-block-gallery > .wp-block-image img {
+  .page-content .wp-block-gallery:not(.jg-ready) > .wp-block-image img {
     height: auto;
     object-fit: contain;
   }
