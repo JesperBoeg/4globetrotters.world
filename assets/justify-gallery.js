@@ -5,8 +5,8 @@
    full, no crop and no letterbox. Re-runs on resize. */
 (function () {
   var GAP = 12;          // must match the CSS gap
-  var TARGET_H = 320;    // desired row height
-  var MAX_LAST_H = 420;  // cap the final (partial) row so a lone image behaves
+  var TARGET_H = 320;    // desired row height (used only for row packing)
+  var MAX_ROW_H = 680;   // cap so a row of tall portraits can't balloon
 
   function arOf(fig) {
     var v = parseFloat(fig.style.getPropertyValue('--ar'));
@@ -45,23 +45,16 @@
         rowArSum = 0;
       }
     });
-    if (row.length) rows.push({ partial: true, items: row });
+    if (row.length) rows.push(row);
 
-    rows.forEach(function (r) {
-      var isPartial = r.partial === true;
-      var cells = isPartial ? r.items : r;
+    rows.forEach(function (cells) {
       var arSum = cells.reduce(function (s, it) { return s + it.ar; }, 0);
       var avail = containerW - GAP * (cells.length - 1);
-      var h;
-      if (isPartial) {
-        // don't stretch a partial last row to full width; keep target height
-        h = Math.min(TARGET_H, MAX_LAST_H);
-        // but if it happens to (nearly) fill the width, justify it too
-        var naturalW = arSum * TARGET_H + GAP * (cells.length - 1);
-        if (naturalW >= containerW * 0.98) h = avail / arSum;
-      } else {
-        h = avail / arSum;
-      }
+      // justify the row to the full content width
+      var h = avail / arSum;
+      // guard against a row of tall portraits becoming absurdly big: cap the
+      // height (the row then no longer fills full width, so centre it)
+      if (h > MAX_ROW_H) h = MAX_ROW_H;
       cells.forEach(function (it) {
         var w = Math.round(h * it.ar);
         it.el.style.width = w + 'px';
