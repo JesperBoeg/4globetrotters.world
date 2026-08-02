@@ -29,22 +29,27 @@
 
     var items = figs.map(function (f) { return { el: f, ar: arOf(f) }; });
 
-    // Greedy row packing: add images until the row (at TARGET_H) overflows.
     var rows = [];
-    var row = [];
-    var rowArSum = 0;
-    items.forEach(function (it) {
-      row.push(it);
-      rowArSum += it.ar;
-      // width at target height = rowArSum*TARGET_H + gaps
-      var w = rowArSum * TARGET_H + GAP * (row.length - 1);
-      if (w >= containerW) {
-        rows.push(row);
-        row = [];
-        rowArSum = 0;
-      }
-    });
-    if (row.length) rows.push(row);
+    if (containerW <= 560) {
+      // Narrow screens: one image per row, each full width.
+      items.forEach(function (it) { rows.push([it]); });
+    } else {
+      // Greedy row packing: add images until the row (at TARGET_H) overflows.
+      var row = [];
+      var rowArSum = 0;
+      items.forEach(function (it) {
+        row.push(it);
+        rowArSum += it.ar;
+        // width at target height = rowArSum*TARGET_H + gaps
+        var w = rowArSum * TARGET_H + GAP * (row.length - 1);
+        if (w >= containerW) {
+          rows.push(row);
+          row = [];
+          rowArSum = 0;
+        }
+      });
+      if (row.length) rows.push(row);
+    }
 
     rows.forEach(function (cells) {
       var arSum = cells.reduce(function (s, it) { return s + it.ar; }, 0);
