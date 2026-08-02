@@ -6,7 +6,7 @@
 (function () {
   var GAP = 12;          // must match the CSS gap
   var TARGET_H = 320;    // desired row height (used only for row packing)
-  var MAX_ROW_H = 680;   // cap so a row of tall portraits can't balloon
+  var MAX_ROW_H = 1100;  // high enough that even a portrait pair fills the width
 
   function arOf(fig) {
     var v = parseFloat(fig.style.getPropertyValue('--ar'));
