@@ -76,48 +76,33 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
    share the same height, and each one's WIDTH flexes to its own aspect ratio so
    the whole photo is always shown (no crop, no black letterbox frame).
    Each .wp-block-image carries --ar (aspect ratio = width / height). */
+/* Justified gallery. Widths/heights are computed per-row by justify-gallery.js
+   using each figure's --ar (aspect ratio = w/h), so every full row fills 100%
+   of the content width at a shared height and each photo is shown in full (no
+   crop, no letterbox). These rules are the pre-JS / no-JS fallback. */
 .page-content .wp-block-gallery {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     margin: 40px 0;
-    --row-h: 320px;   /* target row height; rows flex around this */
+    --row-h: 320px;
 }
 .page-content .wp-block-gallery > .wp-block-image {
     margin: 0;
-    /* grow/shrink weighted by aspect ratio → equal height across a row */
     flex: var(--ar, 1.333) 1 calc(var(--ar, 1.333) * var(--row-h));
-    /* box height derives from its (flex-stretched) width via the photo's own
-       aspect ratio — so the box is ALWAYS the photo's shape, never letterboxed */
-    aspect-ratio: var(--ar, 1.333);
     overflow: hidden;
     border-radius: 8px;
 }
 .page-content .wp-block-gallery > .wp-block-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;     /* fills its flex box exactly; box is already the
-                              photo's own aspect ratio, so nothing is cropped */
+    object-fit: cover;
     display: block;
 }
-/* The last image can wrap alone onto the final row. With a width-derived
-   aspect ratio it would sit narrow (empty space beside it) or, uncapped, grow
-   absurdly tall. Instead pin it to the row height and drop the aspect ratio:
-   alone on a row it grows to full width, sharing a row it matches its
-   neighbours — object-fit:cover trims any excess, never letterboxes. */
-.page-content .wp-block-gallery > .wp-block-image:last-child:not(:only-child) {
-    aspect-ratio: auto;
-    height: var(--row-h);
-}
-/* A lone image shouldn't blow up to full width — cap it and centre it */
-.page-content .wp-block-gallery:has(> .wp-block-image:only-child) { justify-content: center; }
-.page-content .wp-block-gallery > .wp-block-image:only-child {
-    flex: 0 1 auto;
-    max-width: 100%;
-}
-.page-content .wp-block-gallery > .wp-block-image:only-child img {
-    width: auto; height: auto; max-height: 620px; max-width: 100%;
-}
+/* Once justify-gallery.js runs it sets explicit widths/heights and adds this
+   class; the img then shows the whole photo at the computed box size. */
+.page-content .wp-block-gallery.jg-ready { align-items: flex-start; }
+.page-content .wp-block-gallery.jg-ready > .wp-block-image { flex: 0 0 auto; }
 
 /* Wide panorama images — full content width, natural aspect, never cropped */
 .page-content .pano-wide { margin: 32px 0; }
