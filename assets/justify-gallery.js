@@ -6,7 +6,6 @@
 (function () {
   var GAP = 12;          // must match the CSS gap
   var TARGET_H = 320;    // desired row height (used only for row packing)
-  var MAX_ROW_H = 1100;  // high enough that even a portrait pair fills the width
 
   function arOf(fig) {
     var v = parseFloat(fig.style.getPropertyValue('--ar'));
@@ -50,11 +49,9 @@
     rows.forEach(function (cells) {
       var arSum = cells.reduce(function (s, it) { return s + it.ar; }, 0);
       var avail = containerW - GAP * (cells.length - 1);
-      // justify the row to the full content width
+      // justify the row to the full content width — no height cap: every row
+      // always fills 100% of the width, images grow as tall as that requires
       var h = avail / arSum;
-      // guard against a row of tall portraits becoming absurdly big: cap the
-      // height (the row then no longer fills full width, so centre it)
-      if (h > MAX_ROW_H) h = MAX_ROW_H;
       cells.forEach(function (it) {
         var w = Math.round(h * it.ar);
         it.el.style.width = w + 'px';
