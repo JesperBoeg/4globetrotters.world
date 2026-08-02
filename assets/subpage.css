@@ -93,6 +93,12 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; font-weight: 7
     overflow: hidden;
     border-radius: 8px;
 }
+.page-content .wp-block-gallery > .wp-block-image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    line-height: 0;   /* kill inline baseline gap under the image */
+}
 .page-content .wp-block-gallery > .wp-block-image img {
     width: 100%;
     height: 100%;
